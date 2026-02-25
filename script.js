@@ -3,1332 +3,571 @@ let currentQuestionIndex = 0;
 let quizScore = 0;
 let selectedAnswers = [];
 let currentFlashcardIndex = 0;
-let selectedMaterials = [];
+let flashcards = [];
 let draggedElement = null;
 
 // ===== 100 PREGUNTAS PARA EL QUIZ =====
 const quizQuestions = [
-    // SECCIÓN A: CONCEPTUAL (Preguntas 1-20)
-    {
-        question: "¿Cuál es la principal diferencia entre alotropía y polimorfismo?",
-        options: [
-            "La alotropía solo ocurre en elementos puros, mientras que el polimorfismo ocurre en compuestos",
-            "La alotropía es más estable que el polimorfismo",
-            "El polimorfismo solo ocurre a temperaturas bajas",
-            "No hay diferencia, son sinónimos"
-        ],
-        correct: "La alotropía solo ocurre en elementos puros, mientras que el polimorfismo ocurre en compuestos",
-        explanation: "La alotropía es la capacidad de un ELEMENTO PURO para existir en múltiples formas cristalinas (ej: C → Grafito/Diamante). El polimorfismo es la capacidad de un COMPUESTO para cristalizar en diferentes estructuras (ej: ZrO₂ → Monoclínica/Tetragonal/Cúbica)."
-    },
-    {
-        question: "¿Qué caracteriza a un material anisotrópico?",
-        options: [
-            "Sus propiedades son iguales en todas las direcciones",
-            "Sus propiedades varían según la dirección cristalográfica",
-            "Es siempre más duro que los materiales isótropos",
-            "Solo los polímeros pueden ser anisotrópicos"
-        ],
-        correct: "Sus propiedades varían según la dirección cristalográfica",
-        explanation: "La anisotropía significa que las propiedades (dureza, conductividad, etc.) dependen de la dirección. Ejemplo: la madera es más fácil de romper a favor de la veta que en contra. Los monocristales son anisotrópicos; los policristales suelen ser isótropos."
-    },
-    {
-        question: "¿Cuál es la relación entre estructura cristalina y propiedades mecánicas?",
-        options: [
-            "No existe relación directa",
-            "La estructura determina cómo se distribuyen los átomos, lo que afecta directamente las propiedades",
-            "Solo afecta la densidad, no las propiedades mecánicas",
-            "La estructura solo afecta el color del material"
-        ],
-        correct: "La estructura determina cómo se distribuyen los átomos, lo que afecta directamente las propiedades",
-        explanation: "La estructura cristalina define las distancias interatómicas y los enlaces. Esto determina la resistencia, ductilidad, dureza, etc. Ejemplo: el hierro BCC es más duro que el FCC, aunque ambos son hierro."
-    },
-    {
-        question: "¿Qué es un monómero en el contexto de los polímeros?",
-        options: [
-            "Una cadena larga de átomos",
-            "La unidad molecular pequeña que se repite para formar un polímero",
-            "Un polímero muy corto",
-            "Un material que no puede polimerizarse"
-        ],
-        correct: "La unidad molecular pequeña que se repite para formar un polímero",
-        explanation: "Un monómero es la unidad básica. Ejemplo: el etileno (C₂H₄) es el monómero del polietileno. Cuando muchos monómeros se unen mediante enlaces covalentes, forman un polímero (macromolécula)."
-    },
-    {
-        question: "¿Cuál es la diferencia principal entre un termoplástico y un termoestable?",
-        options: [
-            "Los termoplásticos son más baratos",
-            "Los termoplásticos se funden al calentarse; los termoestables se queman sin fundirse",
-            "Los termoestables son siempre más duros",
-            "No hay diferencia, son lo mismo"
-        ],
-        correct: "Los termoplásticos se funden al calentarse; los termoestables se queman sin fundirse",
-        explanation: "TERMOPLÁSTICOS: cadenas lineales/ramificadas sin entrecruzamiento → se funden al calentar (enlaces secundarios débiles). TERMOESTABLES: red 3D con entrecruzamiento covalente → se queman sin fundirse (enlaces primarios fuertes)."
-    },
-    {
-        question: "¿Qué es la temperatura de transición vítrea (Tg) en polímeros?",
-        options: [
-            "La temperatura a la que el polímero se funde completamente",
-            "La temperatura a la que el polímero pasa de estado vítreo (rígido) a gomoso (flexible)",
-            "La temperatura a la que el polímero se cristaliza",
-            "La temperatura máxima que puede soportar un polímero"
-        ],
-        correct: "La temperatura a la que el polímero pasa de estado vítreo (rígido) a gomoso (flexible)",
-        explanation: "Por debajo de Tg: cadenas congeladas, material rígido y frágil. Por encima de Tg: cadenas adquieren movilidad, material flexible. Nota: Tg ≠ Tm (punto de fusión). Ejemplo: PVC tiene Tg ≈ 80°C."
-    },
-    {
-        question: "¿Cuál es la característica principal de los cerámicos?",
-        options: [
-            "Son siempre transparentes",
-            "Son muy dúctiles y fáciles de deformar",
-            "Son muy duros pero frágiles, con alta resistencia a compresión",
-            "Son excelentes conductores de electricidad"
-        ],
-        correct: "Son muy duros pero frágiles, con alta resistencia a compresión",
-        explanation: "Los cerámicos tienen enlaces iónicos/covalentes muy rígidos. Esto los hace: DUROS (resisten rayado), FRÁGILES (se rompen sin previo aviso), RESISTENTES A COMPRESIÓN (soportan fuerzas de aplastamiento). Pero tienen BAJA DUCTILIDAD."
-    },
-    {
-        question: "¿Por qué los cerámicos son frágiles?",
-        options: [
-            "Porque tienen baja densidad",
-            "Porque sus enlaces rígidos impiden el movimiento de dislocaciones, causando fractura repentina",
-            "Porque siempre contienen defectos",
-            "Porque absorben mucha agua"
-        ],
-        correct: "Porque sus enlaces rígidos impiden el movimiento de dislocaciones, causando fractura repentina",
-        explanation: "En metales: dislocaciones fluyen → deformación plástica → aviso antes de rotura. En cerámicos: dislocaciones bloqueadas → no hay deformación → fractura frágil repentina. La energía se gasta en romper, no en deformar."
-    },
-    {
-        question: "¿Qué es un material compuesto?",
-        options: [
-            "Un material hecho de un solo elemento",
-            "Una combinación de dos o más materiales con propiedades diferentes para obtener mejores propiedades",
-            "Un material que solo puede usarse en una aplicación",
-            "Un material que es siempre más caro"
-        ],
-        correct: "Una combinación de dos o más materiales con propiedades diferentes para obtener mejores propiedades",
-        explanation: "Compuesto = Matriz + Refuerzo. Ejemplo: Fibra de carbono (refuerzo) + Epoxi (matriz) = Compuesto con alta resistencia/peso. Objetivo: combinar ventajas de ambos materiales."
-    },
-    {
-        question: "¿Cuál es el papel de la interfase en un material compuesto?",
-        options: [
-            "Es solo un límite sin función importante",
-            "Es crítica para la transferencia de carga desde la matriz hacia el refuerzo",
-            "Solo afecta el costo del material",
-            "No tiene ningún efecto en las propiedades"
-        ],
-        correct: "Es crítica para la transferencia de carga desde la matriz hacia el refuerzo",
-        explanation: "La interfase es donde ocurre la transferencia de esfuerzos. Buena adherencia → carga se transfiere eficientemente → material fuerte. Mala adherencia → fibra se desliza → material débil (fiber pull-out)."
-    },
-    {
-        question: "¿Qué es el dopaje en semiconductores?",
-        options: [
-            "Un proceso de contaminación del material",
-            "La introducción controlada de impurezas para modificar la conductividad eléctrica",
-            "Un defecto que reduce la calidad",
-            "Un proceso que solo se usa en silicio"
-        ],
-        correct: "La introducción controlada de impurezas para modificar la conductividad eléctrica",
-        explanation: "Dopaje tipo N: agregar donantes (P, As) → electrones libres. Dopaje tipo P: agregar aceptores (B, Ga) → huecos positivos. Esto permite controlar la conducción y crear dispositivos como diodos y transistores."
-    },
-    {
-        question: "¿Cuál es la diferencia entre dopaje tipo N y tipo P?",
-        options: [
-            "No hay diferencia, son sinónimos",
-            "Tipo N: donantes (electrones); Tipo P: aceptores (huecos)",
-            "Tipo N es más caro que tipo P",
-            "Tipo P solo se usa en germanio"
-        ],
-        correct: "Tipo N: donantes (electrones); Tipo P: aceptores (huecos)",
-        explanation: "TIPO N (Negativo): Fósforo/Arsénico aportan electrones → portadores mayoritarios = electrones. TIPO P (Positivo): Boro/Galio crean huecos → portadores mayoritarios = huecos. Ambos aumentan conductividad."
-    },
-    {
-        question: "¿Qué es una unión P-N?",
-        options: [
-            "Un defecto en el semiconductor",
-            "La interfaz entre regiones dopadas tipo P y tipo N que forma la base de diodos y transistores",
-            "Un tipo de soldadura",
-            "Un proceso de fabricación"
-        ],
-        correct: "La interfaz entre regiones dopadas tipo P y tipo N que forma la base de diodos y transistores",
-        explanation: "La unión P-N crea una región de agotamiento con un campo eléctrico interno. Esto permite: rectificación (diodos), amplificación (transistores), conversión de luz (celdas solares)."
-    },
-    {
-        question: "¿Cuál es la brecha de energía (Eg) en un semiconductor?",
-        options: [
-            "La diferencia entre el precio de dos semiconductores",
-            "La diferencia de energía entre la banda de conducción y la banda de valencia",
-            "Un defecto en la estructura",
-            "La energía necesaria para fabricar el semiconductor"
-        ],
-        correct: "La diferencia de energía entre la banda de conducción y la banda de valencia",
-        explanation: "Eg determina qué energía necesita un electrón para pasar de la banda de valencia (ligado) a la banda de conducción (libre). Eg pequeña → conductor; Eg grande → aislante. Semiconductores: Eg intermedia."
-    },
-    {
-        question: "¿Cuál es la relación entre cristalinidad y propiedades en polímeros?",
-        options: [
-            "No existe relación",
-            "Mayor cristalinidad → Mayor rigidez y resistencia, pero menor ductilidad",
-            "Mayor cristalinidad → Mayor flexibilidad",
-            "La cristalinidad solo afecta el color"
-        ],
-        correct: "Mayor cristalinidad → Mayor rigidez y resistencia, pero menor ductilidad",
-        explanation: "Zonas cristalinas: cadenas ordenadas, empacadas → rígidas. Zonas amorfas: cadenas desordenadas → flexibles. Polímero muy cristalino = rígido pero frágil. Polímero muy amorfo = flexible pero débil."
-    },
-    {
-        question: "¿Qué es un refractario?",
-        options: [
-            "Un material que refleja luz",
-            "Un cerámica diseñado para mantener propiedades a temperaturas muy elevadas (>1500°C)",
-            "Un material que es fácil de refractar",
-            "Un tipo de vidrio"
-        ],
-        correct: "Un cerámica diseñado para mantener propiedades a temperaturas muy elevadas (>1500°C)",
-        explanation: "Refractarios: alta temperatura de fusión, resistencia al choque térmico, estabilidad química. Usos: revestimiento de hornos, crisoles, convertidores de acero. Ejemplos: alúmina, magnesia, zirconia."
-    },
-    {
-        question: "¿Cuál es la diferencia entre un metal y un semiconductor en términos de conductividad?",
-        options: [
-            "Los metales no conducen, los semiconductores sí",
-            "Los metales conducen bien a cualquier temperatura; los semiconductores aumentan conductividad con temperatura",
-            "No hay diferencia",
-            "Los semiconductores siempre conducen mejor"
-        ],
-        correct: "Los metales conducen bien a cualquier temperatura; los semiconductores aumentan conductividad con temperatura",
-        explanation: "METALES: electrones libres a cualquier T → conductividad casi constante. SEMICONDUCTORES: electrones ligados a baja T, se liberan al aumentar T → conductividad aumenta con temperatura."
-    },
-    {
-        question: "¿Qué es la anisotropía en materiales compuestos reforzados con fibras?",
-        options: [
-            "Un defecto que debe evitarse",
-            "La dependencia de las propiedades de la orientación de las fibras",
-            "Un tipo de fibra especial",
-            "Un proceso de fabricación"
-        ],
-        correct: "La dependencia de las propiedades de la orientación de las fibras",
-        explanation: "Fibras alineadas en dirección X → máxima resistencia en X, mínima en Y. Esto es ANISOTROPÍA CONTROLADA, que es una VENTAJA en ingeniería. Ejemplo: ala de avión con fibras alineadas según dirección de carga."
-    },
-    {
-        question: "¿Cuál es el concepto clave de la relación estructura-propiedad-desempeño?",
-        options: [
-            "La estructura no afecta las propiedades",
-            "La estructura determina las propiedades, que a su vez determinan el desempeño en la aplicación",
-            "El desempeño solo depende del costo",
-            "La propiedad y el desempeño son lo mismo"
-        ],
-        correct: "La estructura determina las propiedades, que a su vez determinan el desempeño en la aplicación",
-        explanation: "ESTRUCTURA (arreglo atómico) → PROPIEDADES (dureza, conductividad, etc.) → DESEMPEÑO (funciona bien en la aplicación). Cambiar estructura → cambiar propiedades → cambiar desempeño."
-    },
-
-    // SECCIÓN B: ANÁLISIS ESTRUCTURAL (Preguntas 21-50)
-    {
-        question: "¿Cómo afecta el tratamiento térmico (temple) a la microestructura del acero?",
-        options: [
-            "No tiene efecto",
-            "Convierte austenita (FCC) en martensita (tetragonal distorsionada) mediante enfriamiento rápido",
-            "Aumenta el tamaño de grano",
-            "Reduce la densidad"
-        ],
-        correct: "Convierte austenita (FCC) en martensita (tetragonal distorsionada) mediante enfriamiento rápido",
-        explanation: "Temple: Calentar a 900°C (austenita FCC) → Enfriar rápido → Martensita (tetragonal). Resultado: dureza muy alta (58-62 HRC), resistencia elevada, pero baja ductilidad. Mecanismo: los átomos no tienen tiempo de reorganizarse."
-    },
-    {
-        question: "¿Qué ocurre con la cristalinidad de un polímero durante el moldeo por inyección?",
-        options: [
-            "Siempre alcanza 100% cristalinidad",
-            "Depende de la velocidad de enfriamiento: enfriamiento rápido → baja cristalinidad; enfriamiento lento → alta cristalinidad",
-            "No se forma ninguna cristalinidad",
-            "La cristalinidad es independiente del proceso"
-        ],
-        correct: "Depende de la velocidad de enfriamiento: enfriamiento rápido → baja cristalinidad; enfriamiento lento → alta cristalinidad",
-        explanation: "Enfriamiento rápido: cadenas no tienen tiempo de ordenarse → amorfo (transparente, flexible). Enfriamiento lento: cadenas se ordenan → cristalino (opaco, rígido). Ejemplo: PET rápido = amorfo; PET lento = semicristalino."
-    },
-    {
-        question: "¿Cómo influye la orientación de las fibras en las propiedades de un compuesto?",
-        options: [
-            "No tiene influencia",
-            "Fibras alineadas en dirección de carga → máxima resistencia en esa dirección; fibras al azar → propiedades más isótropas",
-            "Las fibras siempre tienen el mismo efecto",
-            "Solo afecta el color"
-        ],
-        correct: "Fibras alineadas en dirección de carga → máxima resistencia en esa dirección; fibras al azar → propiedades más isótropas",
-        explanation: "UNIDIRECCIONAL: R/ρ muy alta en dirección de fibras, baja en perpendicular (anisotropía). TEJIDO/CRUZADO: propiedades más equilibradas en dos direcciones. AL AZAR: isotropía, pero menor resistencia que unidireccional."
-    },
-    {
-        question: "¿Qué cambios microestructurales ocurren al aumentar la cristalinidad en un polímero?",
-        options: [
-            "Disminuye la densidad",
-            "Aumentan las zonas ordenadas (cristalinas) a expensas de zonas desordenadas (amorfas)",
-            "Se forman nuevos elementos químicos",
-            "Disminuye la temperatura de fusión"
-        ],
-        correct: "Aumentan las zonas ordenadas (cristalinas) a expensas de zonas desordenadas (amorfas)",
-        explanation: "Mayor cristalinidad = más cadenas plegadas ordenadamente = mayor densidad, rigidez, resistencia, pero menor ductilidad y transparencia. Ejemplo: PET 30% cristalino = flexible; PET 70% cristalino = rígido."
-    },
-    {
-        question: "¿Cómo afecta el dopaje a la estructura de bandas de un semiconductor?",
-        options: [
-            "No tiene efecto",
-            "Crea niveles de energía dentro de la brecha de energía, facilitando la conducción",
-            "Aumenta la brecha de energía",
-            "Elimina la brecha de energía"
-        ],
-        correct: "Crea niveles de energía dentro de la brecha de energía, facilitando la conducción",
-        explanation: "Dopaje tipo N: donantes crean nivel cercano a banda de conducción → electrones se liberan fácilmente. Dopaje tipo P: aceptores crean nivel cercano a banda de valencia → huecos se crean fácilmente. Ambos: conductividad aumenta."
-    },
-    {
-        question: "¿Cuál es el mecanismo de desviación de grietas en compuestos reforzados?",
-        options: [
-            "No existe tal mecanismo",
-            "Las fibras obligan a la grieta a rodearlas, consumiendo energía y aumentando tenacidad",
-            "Las grietas no se forman en compuestos",
-            "Solo ocurre en metales"
-        ],
-        correct: "Las fibras obligan a la grieta a rodearlas, consumiendo energía y aumentando tenacidad",
-        explanation: "Cerámica pura: grieta viaja en línea recta → fractura frágil. Compuesto: grieta encuentra fibra → se desvía → ramificación → consume energía → mayor tenacidad. Esto es por qué los compuestos son más tenaces que cerámicos puros."
-    },
-    {
-        question: "¿Cómo cambia la conductividad eléctrica de un semiconductor con la temperatura?",
-        options: [
-            "Disminuye con la temperatura",
-            "Aumenta con la temperatura (más energía térmica libera portadores)",
-            "No cambia",
-            "Solo cambia en semiconductores tipo N"
-        ],
-        correct: "Aumenta con la temperatura (más energía térmica libera portadores)",
-        explanation: "A mayor T: más energía térmica → más electrones se liberan de la banda de valencia → conducción aumenta. Esto es opuesto a metales (conductividad disminuye con T). Esto es una característica distintiva de semiconductores."
-    },
-    {
-        question: "¿Qué ocurre en la interfase matriz-refuerzo en un compuesto bien adherido?",
-        options: [
-            "No ocurre nada importante",
-            "Hay transferencia eficiente de carga desde la matriz hacia el refuerzo mediante fuerzas de adhesión",
-            "La matriz y el refuerzo se separan",
-            "Se forma un nuevo material"
-        ],
-        correct: "Hay transferencia eficiente de carga desde la matriz hacia el refuerzo mediante fuerzas de adhesión",
-        explanation: "Buena interfase: carga se transfiere → fibra soporta carga → material fuerte. Mala interfase: fibra se desliza (fiber pull-out) → material débil. La interfase es tan importante como los materiales individuales."
-    },
-    {
-        question: "¿Cómo afecta la sinterización a la densidad de un cerámica?",
-        options: [
-            "La densidad disminuye",
-            "La densidad aumenta porque las partículas se unen, reduciendo porosidad",
-            "No hay cambio en densidad",
-            "Solo afecta el color"
-        ],
-        correct: "La densidad aumenta porque las partículas se unen, reduciendo porosidad",
-        explanation: "Sinterización: calentamiento sin llegar a fusión → partículas se unen → porosidad disminuye → densidad aumenta → propiedades mecánicas mejoran. Temperatura típica: 80-90% del punto de fusión."
-    },
-    {
-        question: "¿Cuál es el efecto de la presencia de defectos puntuales en la conductividad de semiconductores?",
-        options: [
-            "No tienen efecto",
-            "Pueden actuar como centros de recombinación, reduciendo conductividad",
-            "Siempre aumentan la conductividad",
-            "Solo afectan el color"
-        ],
-        correct: "Pueden actuar como centros de recombinación, reduciendo conductividad",
-        explanation: "Defectos puntuales (vacancias, intersticios): electrones y huecos se recombinan → desaparecen portadores → conductividad disminuye. Por eso la pureza es crítica en semiconductores. Defectos no deseados vs. dopaje controlado."
-    },
-    {
-        question: "¿Cómo influye la velocidad de enfriamiento en la formación de martensita en aceros?",
-        options: [
-            "La velocidad no importa",
-            "Enfriamiento rápido → martensita; enfriamiento lento → perlita/ferrita",
-            "Enfriamiento lento → martensita",
-            "Solo afecta el color"
-        ],
-        correct: "Enfriamiento rápido → martensita; enfriamiento lento → perlita/ferrita",
-        explanation: "Enfriamiento rápido (agua): austenita no tiene tiempo de transformarse → martensita (dura). Enfriamiento lento (aire): austenita se transforma en perlita (ferrita + cementita, más blanda). Velocidad crítica: ~30°C/s."
-    },
-    {
-        question: "¿Qué cambios en la interfase P-N ocurren cuando se aplica polarización directa?",
-        options: [
-            "No hay cambios",
-            "La región de agotamiento se reduce, permitiendo el flujo de corriente",
-            "La región de agotamiento se expande",
-            "Se forma una nueva región"
-        ],
-        correct: "La región de agotamiento se reduce, permitiendo el flujo de corriente",
-        explanation: "Polarización directa: voltaje positivo en P, negativo en N → campo eléctrico externo reduce el campo interno → región de agotamiento se reduce → portadores pueden cruzar → corriente fluye. Esto es la base de la rectificación."
-    },
-    {
-        question: "¿Cómo afecta el revenido después del temple a la microestructura del acero?",
-        options: [
-            "No tiene efecto",
-            "Reduce la dureza pero aumenta la tenacidad al transformar martensita en una microestructura más estable",
-            "Aumenta la dureza",
-            "Convierte el acero en cerámico"
-        ],
-        correct: "Reduce la dureza pero aumenta la tenacidad al transformar martensita en una microestructura más estable",
-        explanation: "Revenido: calentamiento moderado (200-600°C) después del temple → martensita se descompone parcialmente → precipitación de carburos → estructura más estable → menor dureza pero mayor tenacidad. Balance entre dureza y ductilidad."
-    },
-    {
-        question: "¿Cuál es el efecto de la orientación cristalográfica en la ductilidad de un metal?",
-        options: [
-            "No tiene efecto",
-            "Ciertos planos cristalográficos facilitan el deslizamiento de dislocaciones → mayor ductilidad en esas direcciones",
-            "Todos los planos tienen igual ductilidad",
-            "Solo afecta el color"
-        ],
-        correct: "Ciertos planos cristalográficos facilitan el deslizamiento de dislocaciones → mayor ductilidad en esas direcciones",
-        explanation: "En FCC: 12 sistemas de deslizamiento → alta ductilidad. En BCC: 12 sistemas pero menos activos → ductilidad moderada. En HCP: 3 sistemas → baja ductilidad. Anisotropía en propiedades mecánicas."
-    },
-    {
-        question: "¿Cómo afecta la concentración de dopante a la conductividad de un semiconductor?",
-        options: [
-            "No tiene efecto",
-            "Mayor concentración de dopante → mayor conductividad (más portadores libres)",
-            "Mayor concentración → menor conductividad",
-            "Solo afecta el color"
-        ],
-        correct: "Mayor concentración de dopante → mayor conductividad (más portadores libres)",
-        explanation: "Dopaje ligero: pocos portadores → baja conductividad. Dopaje fuerte: muchos portadores → alta conductividad. Pero hay límite: muy alto dopaje → scattering aumenta → conductividad se satura."
-    },
-    {
-        question: "¿Qué ocurre en la región de agotamiento de una unión P-N en equilibrio?",
-        options: [
-            "No ocurre nada",
-            "Se forma un campo eléctrico interno debido a la difusión de portadores y la falta de portadores en esa región",
-            "Los portadores se multiplican",
-            "Se forma un nuevo material"
-        ],
-        correct: "Se forma un campo eléctrico interno debido a la difusión de portadores y la falta de portadores en esa región",
-        explanation: "Región de agotamiento: iones positivos (P dopado) + iones negativos (N dopado) → campo eléctrico interno que se opone a la difusión. En equilibrio: difusión = drift → corriente neta = 0."
-    },
-    {
-        question: "¿Cómo influye el tamaño de grano en la resistencia de un metal?",
-        options: [
-            "No tiene influencia",
-            "Granos más pequeños → mayor resistencia (fronteras de grano actúan como barreras a dislocaciones)",
-            "Granos más grandes → mayor resistencia",
-            "Solo afecta el color"
-        ],
-        correct: "Granos más pequeños → mayor resistencia (fronteras de grano actúan como barreras a dislocaciones)",
-        explanation: "Frontera de grano: discontinuidad en la orientación cristalina → barrera al movimiento de dislocaciones. Más fronteras (granos pequeños) → más barreras → mayor resistencia. Relación de Hall-Petch: σ = σ₀ + k·d^(-1/2)."
-    },
-    {
-        question: "¿Cuál es el mecanismo de conducción en un semiconductor tipo N a temperatura ambiente?",
-        options: [
-            "Solo conducción por huecos",
-            "Conducción por electrones (portadores mayoritarios) liberados del dopante",
-            "No hay conducción",
-            "Conducción iónica"
-        ],
-        correct: "Conducción por electrones (portadores mayoritarios) liberados del dopante",
-        explanation: "Tipo N: donantes (P, As) ceden electrones → electrones = portadores mayoritarios. A temperatura ambiente: energía térmica suficiente para liberar electrones → conducción. Huecos existen pero son minoría."
-    },
-    {
-        question: "¿Cómo afecta la presencia de una interfase débil en un compuesto a su resistencia?",
-        options: [
-            "No tiene efecto",
-            "Reduce significativamente la resistencia porque la carga no se transfiere eficientemente al refuerzo",
-            "Aumenta la resistencia",
-            "Solo afecta el color"
-        ],
-        correct: "Reduce significativamente la resistencia porque la carga no se transfiere eficientemente al refuerzo",
-        explanation: "Interfase débil: fibra se desliza (fiber pull-out) → carga no se transfiere → material se comporta como si tuviera solo matriz → resistencia muy baja. Interfase es tan crítica como los materiales."
-    },
-
-    // SECCIÓN C: APLICACIÓN ASHBY (Preguntas 51-70)
-    {
-        question: "Para diseñar un ala de avión, ¿cuál es el índice de desempeño más importante?",
-        options: [
-            "Densidad (ρ)",
-            "Módulo de Young (E)",
-            "Relación E/ρ (rigidez específica)",
-            "Costo"
-        ],
-        correct: "Relación E/ρ (rigidez específica)",
-        explanation: "Ala de avión: debe ser rígida (E alta) pero ligera (ρ baja). Índice: E/ρ. Materiales candidatos: Fibra de carbono/epoxi (E/ρ ≈ 144 GPa/(g/cm³)), Titanio (E/ρ ≈ 23), Acero (E/ρ ≈ 27). Compuesto gana."
-    },
-    {
-        question: "¿Por qué se elige fibra de carbono en lugar de acero para estructuras aeroespaciales?",
-        options: [
-            "Porque es más barato",
-            "Porque tiene mayor relación resistencia/peso (R/ρ) y rigidez/peso (E/ρ)",
-            "Porque es más fácil de fabricar",
-            "Porque es más resistente al calor"
-        ],
-        correct: "Porque tiene mayor relación resistencia/peso (R/ρ) y rigidez/peso (E/ρ)",
-        explanation: "Fibra de carbono: ρ = 1.6 g/cm³, R ≈ 1500 MPa, E ≈ 230 GPa → R/ρ ≈ 937, E/ρ ≈ 144. Acero: ρ = 7.85 g/cm³, R ≈ 250 MPa, E ≈ 210 GPa → R/ρ ≈ 32, E/ρ ≈ 27. Compuesto es 30x mejor en relación R/ρ."
-    },
-    {
-        question: "Para un implante biomédico (cadera), ¿cuáles son las restricciones de diseño?",
-        options: [
-            "Solo costo",
-            "Solo resistencia mecánica",
-            "Biocompatibilidad, resistencia a corrosión, módulo similar a hueso, no tóxico",
-            "Solo densidad"
-        ],
-        correct: "Biocompatibilidad, resistencia a corrosión, módulo similar a hueso, no tóxico",
-        explanation: "Implante cadera: debe integrase con hueso (E similar), no corroerse en fluidos corporales, no ser tóxico. Candidatos: Titanio (E = 103 GPa, hueso = 20 GPa → muy rígido), Compuesto Ti/cerámica (E ≈ 30 GPa, mejor match)."
-    },
-    {
-        question: "¿Por qué se usa aluminio en lugar de acero en la carrocería de automóviles modernos?",
-        options: [
-            "Porque es más barato",
-            "Porque es más resistente",
-            "Porque tiene menor densidad (2.7 vs 7.85 g/cm³) → menor peso → menor consumo de combustible",
-            "Porque es más fácil de reciclar"
-        ],
-        correct: "Porque tiene menor densidad (2.7 vs 7.85 g/cm³) → menor peso → menor consumo de combustible",
-        explanation: "Trade-off: Al tiene menor E (70 vs 210 GPa) pero la reducción de peso compensa. Reducción de peso → menor consumo combustible → menor costo operacional. Índice: E/ρ: Al = 26, Acero = 27 (similar), pero Al es 3x más ligero."
-    },
-    {
-        question: "Para una herramienta de corte de alta velocidad, ¿cuál es la propiedad crítica?",
-        options: [
-            "Bajo costo",
-            "Alta dureza a temperatura elevada (resistencia al ablandamiento térmico)",
-            "Alta ductilidad",
-            "Baja densidad"
-        ],
-        correct: "Alta dureza a temperatura elevada (resistencia al ablandamiento térmico)",
-        explanation: "Herramienta corte: fricción → calor → T puede alcanzar 800-1000°C. Material debe mantener dureza. Candidatos: Acero rápido (W, Mo, V), Carburo de tungsteno (WC), Cerámica (Al₂O₃). Cerámica gana en dureza a alta T."
-    },
-    {
-        question: "¿Por qué se elige zirconia estabilizada para implantes dentales en lugar de alúmina?",
-        options: [
-            "Porque es más barata",
-            "Porque tiene mayor tenacidad (resistencia al choque térmico y mecánico) aunque menor dureza",
-            "Porque es más fácil de fabricar",
-            "Porque es más resistente a la corrosión"
-        ],
-        correct: "Porque tiene mayor tenacidad (resistencia al choque térmico y mecánico) aunque menor dureza",
-        explanation: "Alúmina: dureza alta pero frágil (K_IC ≈ 4 MPa√m). Zirconia estabilizada: tenacidad mayor (K_IC ≈ 8 MPa√m) → resiste mejor masticación. Trade-off: menor dureza pero mejor confiabilidad clínica."
-    },
-    {
-        question: "Para una tubería de agua a presión, ¿cuál es el material más apropiado?",
-        options: [
-            "Acero (solo)",
-            "Polímero (PVC o PE)",
-            "Cerámica",
-            "Compuesto"
-        ],
-        correct: "Polímero (PVC o PE)",
-        explanation: "Restricciones: resistencia a presión, resistencia a corrosión, bajo costo, bajo peso. PVC: E = 2.7 GPa, resistencia = 50 MPa, resistencia química excelente, costo bajo, peso bajo. Acero: más caro, más pesado, requiere anticorrosivos."
-    },
-    {
-        question: "¿Por qué se usa vidrio (SiO₂ amorfo) en ventanas en lugar de cerámica cristalina?",
-        options: [
-            "Porque es más barato",
-            "Porque es transparente (amorfo) vs opaco (cristalino), aunque ambos son cerámicos",
-            "Porque es más resistente",
-            "Porque es más denso"
-        ],
-        correct: "Porque es transparente (amorfo) vs opaco (cristalino), aunque ambos son cerámicos",
-        explanation: "Vidrio: SiO₂ amorfo → sin orden de largo alcance → luz pasa (transparente). Cerámica cristalina: orden periódico → dispersión de luz → opaco. Ambos son cerámicos, pero propiedades ópticas diferentes."
-    },
-    {
-        question: "Para una pala de turbina eólica, ¿cuál es el material óptimo y por qué?",
-        options: [
-            "Acero (máxima resistencia)",
-            "Fibra de vidrio/poliéster (buena relación R/ρ, bajo costo)",
-            "Fibra de carbono/epoxi (mejor R/ρ pero más caro)",
-            "Aluminio (bajo peso)"
-        ],
-        correct: "Fibra de vidrio/poliéster (buena relación R/ρ, bajo costo)",
-        explanation: "Trade-off: Fibra carbono tiene mejor R/ρ pero costo es 8x mayor. Fibra vidrio: R/ρ = 243, E/ρ = 22, costo = $3/kg. Carbono: R/ρ = 937, E/ρ = 144, costo = $25/kg. Para palas grandes, vidrio es más económico."
-    },
-    {
-        question: "¿Cuál es el criterio de selección de materiales para un contenedor de almacenamiento de hidrógeno a alta presión?",
-        options: [
-            "Solo resistencia mecánica",
-            "Resistencia a presión, permeabilidad baja a H₂, resistencia a fatiga",
-            "Solo bajo costo",
-            "Solo bajo peso"
-        ],
-        correct: "Resistencia a presión, permeabilidad baja a H₂, resistencia a fatiga",
-        explanation: "Contenedor H₂: presión 350-700 bar → necesita alta resistencia. Pero H₂ es pequeño → permeabilidad debe ser baja. Ciclos presión → fatiga. Candidatos: Acero de alta resistencia, Compuesto fibra/resina con barrera."
-    },
-    {
-        question: "Para una prótesis de rodilla, ¿cuál es el material ideal para el componente de carga?",
-        options: [
-            "Polímero puro",
-            "Acero inoxidable (resistencia, biocompatibilidad, durabilidad)",
-            "Cerámica pura",
-            "Aluminio"
-        ],
-        correct: "Acero inoxidable (resistencia, biocompatibilidad, durabilidad)",
-        explanation: "Prótesis rodilla: soporta carga cíclica (fatiga) en ambiente corrosivo (fluidos corporales). Acero inoxidable 316: E = 193 GPa, R = 515 MPa, resistencia corrosión excelente, biocompatible, durabilidad 15+ años."
-    },
-    {
-        question: "¿Por qué se elige silicio dopado en lugar de metal puro para dispositivos semiconductores?",
-        options: [
-            "Porque es más barato",
-            "Porque permite control preciso de conductividad mediante dopaje, creando uniones P-N",
-            "Porque es más resistente",
-            "Porque es más denso"
-        ],
-        correct: "Porque permite control preciso de conductividad mediante dopaje, creando uniones P-N",
-        explanation: "Metal puro: conductividad fija, no se puede controlar. Silicio dopado: conductividad se controla con concentración de dopante → se pueden crear diodos, transistores, circuitos. Flexibilidad de diseño es la clave."
-    },
-    {
-        question: "Para un blindaje balístico, ¿cuál es la combinación de materiales más efectiva?",
-        options: [
-            "Solo acero",
-            "Solo cerámica",
-            "Compuesto: cerámica (dureza, fragmentación) + respaldo de polímero (absorción energía)",
-            "Solo polímero"
-        ],
-        correct: "Compuesto: cerámica (dureza, fragmentación) + respaldo de polímero (absorción energía)",
-        explanation: "Blindaje: cerámica (Al₂O₃, SiC) fragmenta proyectil, polímero (Kevlar) absorbe energía residual. Solo cerámica: frágil, se quiebra. Solo polímero: no detiene proyectil. Combinación: sinergia."
-    },
-    {
-        question: "¿Por qué se usa GaAs en lugar de silicio para celdas solares en satélites?",
-        options: [
-            "Porque es más barato",
-            "Porque tiene mayor eficiencia de conversión y mejor resistencia a radiación en el espacio",
-            "Porque es más fácil de fabricar",
-            "Porque es más denso"
-        ],
-        correct: "Porque tiene mayor eficiencia de conversión y mejor resistencia a radiación en el espacio",
-        explanation: "Silicio: eficiencia ≈ 15%, radiación daña estructura. GaAs: eficiencia ≈ 26%, mayor Eg → menos daño por radiación. Trade-off: GaAs es más caro, pero en satélites el costo de lanzamiento justifica mejor eficiencia."
-    },
-    {
-        question: "Para un componente de motor de combustión interna, ¿cuál es la restricción de diseño más crítica?",
-        options: [
-            "Bajo costo",
-            "Alta resistencia a fatiga térmica (ciclos T 300-800°C) y resistencia a corrosión",
-            "Alta ductilidad",
-            "Baja densidad"
-        ],
-        correct: "Alta resistencia a fatiga térmica (ciclos T 300-800°C) y resistencia a corrosión",
-        explanation: "Motor: ciclos térmicos rápidos → fatiga térmica. Combustión → gases corrosivos. Candidatos: Acero aleado (Mo, V), Aleación de níquel (Inconel). Inconel: resiste 1000°C, excelente fatiga térmica."
-    },
-    {
-        question: "¿Cuál es el trade-off principal en la selección de materiales para un contenedor de bebidas?",
-        options: [
-            "Resistencia vs costo",
-            "Peso vs costo vs impacto ambiental",
-            "Dureza vs ductilidad",
-            "Conductividad vs resistencia"
-        ],
-        correct: "Peso vs costo vs impacto ambiental",
-        explanation: "Aluminio: ligero, reciclable, costo moderado. Plástico: muy ligero, bajo costo, impacto ambiental alto. Vidrio: pesado, costo bajo, reciclable, impacto ambiental bajo. Decisión depende de prioridades."
-    },
-    {
-        question: "Para un cable de transmisión eléctrica de larga distancia, ¿cuál es el material ideal?",
-        options: [
-            "Oro puro",
-            "Cobre (excelente conductividad, costo razonable, reciclable)",
-            "Aluminio (menor conductividad pero más ligero)",
-            "Plata pura"
-        ],
-        correct: "Cobre (excelente conductividad, costo razonable, reciclable)",
-        explanation: "Cable: debe conducir bien (cobre: σ = 59.6 MS/m vs aluminio: 37.7 MS/m) pero costo debe ser razonable. Cobre es el balance óptimo. Pérdidas por resistencia: I²R → cobre reduce pérdidas."
-    },
-
-    // SECCIÓN D: CASO INTEGRADOR (Preguntas 71-100)
-    {
-        question: "En un diodo semiconductor para aplicación aeroespacial, ¿cuál es el efecto de la radiación cósmica?",
-        options: [
-            "No tiene efecto",
-            "Crea defectos puntuales (desplazamientos atómicos) que actúan como centros de recombinación",
-            "Aumenta la conductividad",
-            "Cambia el color"
-        ],
-        correct: "Crea defectos puntuales (desplazamientos atómicos) que actúan como centros de recombinación",
-        explanation: "Radiación: fotones/partículas desplazan átomos → vacancias + intersticios → centros de recombinación → portadores desaparecen → conductividad disminuye → diodo falla. GaAs es más resistente que Si."
-    },
-    {
-        question: "¿Por qué GaAs es mejor que silicio para celdas solares en satélites?",
-        options: [
-            "Porque es más barato",
-            "Porque Eg mayor (1.4 vs 1.1 eV) → menos daño por radiación; eficiencia mayor (26% vs 15%)",
-            "Porque es más fácil de fabricar",
-            "Porque es más denso"
-        ],
-        correct: "Porque Eg mayor (1.4 vs 1.1 eV) → menos daño por radiación; eficiencia mayor (26% vs 15%)",
-        explanation: "Brecha de energía mayor: radiación necesita más energía para crear defectos → menos daño. Eficiencia mayor: absorbe más luz útil. Trade-off: GaAs cuesta 10x más, pero en satélites vale la pena."
-    },
-    {
-        question: "Para una turbina de gas a 1400°C, ¿cuál es el material más apropiado?",
-        options: [
-            "Acero (se funde a 1500°C)",
-            "Cerámica pura (frágil a choque térmico)",
-            "Aleación de níquel (Inconel) con recubrimiento cerámico (barrera térmica)",
-            "Polímero"
-        ],
-        correct: "Aleación de níquel (Inconel) con recubrimiento cerámico (barrera térmica)",
-        explanation: "Turbina 1400°C: acero funde. Cerámica pura: frágil. Solución: Inconel (resiste 1000°C) + recubrimiento cerámico (barrera térmica, aísla hasta 1200°C). Estructura: metal (resistencia) + cerámica (aislamiento)."
-    },
-    {
-        question: "¿Cómo se optimiza la interfase en un compuesto fibra de carbono/epoxi?",
-        options: [
-            "No es importante",
-            "Usando agentes de acoplamiento (silanos) que crean puentes químicos entre fibra y matriz",
-            "Aumentando la porosidad",
-            "Reduciendo la densidad"
-        ],
-        correct: "Usando agentes de acoplamiento (silanos) que crean puentes químicos entre fibra y matriz",
-        explanation: "Sin tratamiento: adhesión débil → fiber pull-out. Con silanos: enlaces químicos C-O-Si-O-C → transferencia de carga eficiente → resistencia aumenta 20-30%. Interfase es tan importante como los materiales."
-    },
-    {
-        question: "¿Cuál es el mecanismo de falla de un acero bajo fatiga térmica (ciclos T)?",
-        options: [
-            "Fusión",
-            "Grietas por expansión térmica diferencial (ciclos T crean tensiones residuales)",
-            "Corrosión",
-            "Cambio de fase"
-        ],
-        correct: "Grietas por expansión térmica diferencial (ciclos T crean tensiones residuales)",
-        explanation: "Ciclo T: expansión → contracción → tensiones residuales → grietas. Cada ciclo: ΔT → Δε = α·ΔT → σ = E·Δε. Después de N ciclos: grietas se propagan → falla. Resistencia a fatiga térmica: bajo α, alto E, alta conductividad."
-    },
-    {
-        question: "¿Por qué los refractarios básicos (MgO) se usan en hornos de acero en lugar de ácidos (SiO₂)?",
-        options: [
-            "Porque son más baratos",
-            "Porque la escoria del acero es básica → MgO resiste; SiO₂ se disolvería",
-            "Porque son más duros",
-            "Porque son más ligeros"
-        ],
-        correct: "Porque la escoria del acero es básica → MgO resiste; SiO₂ se disolvería",
-        explanation: "Regla de oro: Ácido resiste a ácido, Básico resiste a básico. Escoria acero: básica (CaO, MgO) → MgO refractario resiste. SiO₂ (ácido) se disolvería en escoria básica. Selección por química."
-    },
-    {
-        question: "¿Cómo se logra la anisotropía controlada en un compuesto laminado?",
-        options: [
-            "No es posible",
-            "Orientando las fibras en direcciones específicas ([0°], [90°], [±45°]) según cargas esperadas",
-            "Aumentando la densidad",
-            "Cambiando el color"
-        ],
-        correct: "Orientando las fibras en direcciones específicas ([0°], [90°], [±45°]) según cargas esperadas",
-        explanation: "Laminado: cada capa tiene orientación diferente. [0°]: resistencia en X. [90°]: resistencia en Y. [±45°]: resistencia a torsión. Ingeniero diseña la secuencia de capas para optimizar propiedades según cargas."
-    },
-    {
-        question: "¿Cuál es el efecto del dopaje en la temperatura de transición de un semiconductor?",
-        options: [
-            "No tiene efecto",
-            "Dopaje no afecta Tg (que es de polímeros), pero sí afecta la temperatura de operación máxima",
-            "Aumenta Tg",
-            "Disminuye Tg"
-        ],
-        correct: "Dopaje no afecta Tg (que es de polímeros), pero sí afecta la temperatura de operación máxima",
-        explanation: "Nota: Tg es de polímeros. Para semiconductores: temperatura máxima de operación depende de la estabilidad térmica de la unión P-N. Dopaje no cambia esto directamente, pero concentración de dopante sí afecta la resistencia térmica."
-    },
-    {
-        question: "¿Por qué se usa un compuesto de matriz metálica (MMC) en lugar de metal puro en componentes de motor?",
-        options: [
-            "Porque es más barato",
-            "Porque combina la ductilidad del metal con la dureza/rigidez del refuerzo cerámico",
-            "Porque es más fácil de fabricar",
-            "Porque es más ligero"
-        ],
-        correct: "Porque combina la ductilidad del metal con la dureza/rigidez del refuerzo cerámico",
-        explanation: "MMC: Al + partículas SiC. Ventajas: E aumenta (Al = 70 GPa → Al/SiC = 100+ GPa), mantiene ductilidad (no es frágil como cerámica pura), resistencia térmica mejorada. Trade-off: más caro, más complejo de fabricar."
-    },
-    {
-        question: "¿Cuál es la razón principal por la que los semiconductores se usan en lugar de metales para dispositivos electrónicos?",
-        options: [
-            "Porque son más baratos",
-            "Porque la conductividad se puede controlar mediante dopaje, permitiendo crear dispositivos como diodos y transistores",
-            "Porque son más resistentes",
-            "Porque son más ligeros"
-        ],
-        correct: "Porque la conductividad se puede controlar mediante dopaje, permitiendo crear dispositivos como diodos y transistores",
-        explanation: "Metal: conductividad fija, no se puede controlar. Semiconductor: conductividad se ajusta con dopaje → se crean uniones P-N → rectificación, amplificación, conmutación. Flexibilidad de diseño es revolucionaria."
-    },
-    {
-        question: "¿Cómo se optimiza la relación resistencia/peso en un compuesto para aviación?",
-        options: [
-            "Usando solo fibra de carbono",
-            "Orientando fibras en dirección de máxima carga, minimizando fibras en otras direcciones",
-            "Aumentando la densidad",
-            "Usando matriz de mayor densidad"
-        ],
-        correct: "Orientando fibras en dirección de máxima carga, minimizando fibras en otras direcciones",
-        explanation: "Ala: carga principal = flexión (vertical) → 80% fibras en [0°] (longitudinal). Carga secundaria = torsión → 20% fibras en [±45°]. Resultado: R/ρ optimizado, peso minimizado. Diseño inteligente > material más caro."
-    },
-    {
-        question: "¿Por qué la zirconia estabilizada con itria (YSZ) es mejor que alúmina pura para implantes dentales?",
-        options: [
-            "Porque es más barata",
-            "Porque tiene mayor tenacidad (resiste masticación) aunque menor dureza",
-            "Porque es más fácil de fabricar",
-            "Porque es más transparente"
-        ],
-        correct: "Porque tiene mayor tenacidad (resiste masticación) aunque menor dureza",
-        explanation: "Alúmina: dureza = 9 Mohs, K_IC = 4 MPa√m (frágil). YSZ: dureza = 8 Mohs, K_IC = 8 MPa√m (tenaz). Masticación: carga cíclica → YSZ resiste mejor. Trade-off: menor dureza pero mejor confiabilidad clínica."
-    },
-    {
-        question: "¿Cuál es el principal desafío en la selección de materiales para un reactor nuclear?",
-        options: [
-            "Solo costo",
-            "Resistencia a radiación, resistencia a corrosión en agua caliente, estabilidad térmica",
-            "Solo bajo peso",
-            "Solo alta conductividad"
-        ],
-        correct: "Resistencia a radiación, resistencia a corrosión en agua caliente, estabilidad térmica",
-        explanation: "Reactor: radiación crea defectos → fragilización. Agua 300°C → corrosión. T variable → fatiga térmica. Candidatos: Acero inoxidable 316, Aleaciones Ni (Inconel). Múltiples restricciones simultáneamente."
-    },
-    {
-        question: "¿Cómo se mejora la resistencia al choque térmico de un cerámica?",
-        options: [
-            "Aumentando la dureza",
-            "Aumentando la tenacidad (K_IC) y reduciendo el módulo de Young (E)",
-            "Aumentando la densidad",
-            "Cambiando el color"
-        ],
-        correct: "Aumentando la tenacidad (K_IC) y reduciendo el módulo de Young (E)",
-        explanation: "Choque térmico: ΔT → tensión térmica σ = E·α·ΔT. Para resistir: E bajo (menos tensión) y K_IC alto (grietas no se propagan). Zirconia: E = 200 GPa, K_IC = 8 MPa√m. Alúmina: E = 380 GPa, K_IC = 4 MPa√m. Zirconia gana."
-    },
-    {
-        question: "¿Por qué se usa nitruro de silicio (Si₃N₄) en cojinetes de alta velocidad en lugar de acero?",
-        options: [
-            "Porque es más barato",
-            "Porque tiene menor densidad (3.2 vs 7.85 g/cm³) → menor inercia → menos fricción, mayor velocidad",
-            "Porque es más fácil de fabricar",
-            "Porque es más dúctil"
-        ],
-        correct: "Porque tiene menor densidad (3.2 vs 7.85 g/cm³) → menor inercia → menos fricción, mayor velocidad",
-        explanation: "Cojinete alta velocidad: inercia → fricción → calor → falla. Si₃N₄: ρ = 3.2 g/cm³, E = 310 GPa, dureza alta. Acero: ρ = 7.85 g/cm³. Reducción peso 60% → velocidad máxima aumenta 2x."
-    },
-    {
-        question: "¿Cuál es la estrategia de selección de materiales para un componente que debe resistir corrosión y carga mecánica simultáneamente?",
-        options: [
-            "Elegir el material más resistente a corrosión",
-            "Elegir el material más resistente mecánicamente",
-            "Usar una matriz de decisión multicriterio considerando ambas restricciones",
-            "Elegir el más barato"
-        ],
-        correct: "Usar una matriz de decisión multicriterio considerando ambas restricciones",
-        explanation: "Trade-off: Acero inoxidable = buena corrosión pero E moderado. Titanio = excelente corrosión, E moderado, caro. Aluminio anodizado = buena corrosión, E bajo. Decisión: matriz de decisión con pesos (importancia relativa)."
-    },
-    {
-        question: "¿Por qué los compuestos de fibra de vidrio son más económicos que los de fibra de carbono para aplicaciones no críticas?",
-        options: [
-            "Porque la fibra de vidrio es más resistente",
-            "Porque el costo de fibra de vidrio es 10x menor ($1 vs $10/kg) y la relación R/ρ es suficiente para muchas aplicaciones",
-            "Porque es más fácil de reciclar",
-            "Porque es más ligero"
-        ],
-        correct: "Porque el costo de fibra de vidrio es 10x menor ($1 vs $10/kg) y la relación R/ρ es suficiente para muchas aplicaciones",
-        explanation: "Fibra vidrio: R/ρ = 243, costo = $1/kg. Fibra carbono: R/ρ = 937, costo = $10/kg. Para palas eólicas, barcos, tuberías: vidrio es óptimo (costo/desempeño). Para aviación: carbono justifica costo."
-    },
-    {
-        question: "¿Cómo se optimiza un semiconductor para máxima eficiencia en una celda solar?",
-        options: [
-            "Aumentando el dopaje",
-            "Eligiendo Eg que coincida con pico de espectro solar (≈ 1.4 eV) y minimizando recombinación",
-            "Aumentando la densidad",
-            "Cambiando el color"
-        ],
-        correct: "Eligiendo Eg que coincida con pico de espectro solar (≈ 1.4 eV) y minimizando recombinación",
-        explanation: "Eficiencia solar: depende de Eg. Si: Eg = 1.1 eV (eficiencia ≈ 15%). GaAs: Eg = 1.4 eV (eficiencia ≈ 26%). Multiunión: múltiples Eg → eficiencia > 40%. Recombinación: defectos reducen eficiencia → pureza crítica."
-    }
+    {question: "¿Cuál es la principal diferencia entre alotropía y polimorfismo?", options: ["La alotropía solo ocurre en elementos puros", "La alotropía es más estable", "El polimorfismo solo a bajas temperaturas", "No hay diferencia"], correct: 0, explanation: "La alotropía es para elementos puros (C→Grafito/Diamante), polimorfismo para compuestos (ZrO₂→Monoclínica/Tetragonal)."},
+    {question: "¿Qué caracteriza a un material anisotrópico?", options: ["Propiedades iguales en todas direcciones", "Propiedades varían según dirección", "Siempre más duro", "Solo polímeros"], correct: 1, explanation: "Anisotropía = propiedades dependen de la dirección. Ejemplo: madera más fácil de romper a favor de la veta."},
+    {question: "¿Cuál es la relación entre estructura cristalina y propiedades?", options: ["No existe relación", "La estructura determina las propiedades", "Solo afecta densidad", "Solo afecta color"], correct: 1, explanation: "La estructura define distancias interatómicas y enlaces, determinando resistencia, ductilidad, dureza, etc."},
+    {question: "¿Qué es un monómero?", options: ["Una cadena larga", "Unidad molecular que se repite", "Polímero muy corto", "Átomo individual"], correct: 1, explanation: "Monómero = unidad pequeña que se repite. Ejemplo: etileno (C2H4) es el monómero del polietileno."},
+    {question: "¿Qué tipo de enlace predomina en los polímeros?", options: ["Iónico", "Covalente en cadena principal", "Metálico", "Van der Waals"], correct: 1, explanation: "Enlace covalente fuerte en la cadena principal. Fuerzas Van der Waals débiles entre cadenas."},
+    {question: "¿Qué es la Tg en polímeros?", options: ["Temperatura de fusión", "Temperatura de transición vítrea", "Temperatura de degradación", "Temperatura de cristalización"], correct: 1, explanation: "Tg = temperatura donde el polímero pasa de vítreo (rígido) a gomoso (flexible), sin fundirse."},
+    {question: "¿Cuál es la característica principal de los cerámicos?", options: ["Alta ductilidad", "Alta dureza y fragilidad", "Excelente conductividad", "Bajo punto de fusión"], correct: 1, explanation: "Cerámicos: duros, frágiles, aislantes, estables térmicamente. Fractura sin deformación plástica."},
+    {question: "¿Qué enlace predomina en los cerámicos?", options: ["Covalente puro", "Iónico y covalente", "Metálico", "Van der Waals"], correct: 1, explanation: "Enlaces iónico-covalentes muy fuertes crean rigidez extrema, causando fragilidad."},
+    {question: "¿Qué es un refractario?", options: ["Material frágil", "Cerámico de alta temperatura", "Polímero resistente", "Metal puro"], correct: 1, explanation: "Refractario = cerámico diseñado para resistir T>1500°C. Usado en hornos, crisoles, reactores."},
+    {question: "¿Cuál es la ventaja principal de los materiales compuestos?", options: ["Bajo costo", "Alta relación resistencia/peso", "Fácil procesamiento", "Reciclaje simple"], correct: 1, explanation: "Compuestos = refuerzo + matriz. Combinan fortalezas de ambos: resistencia del refuerzo + ductilidad de matriz."},
+    {question: "¿Qué es la interfase en un compuesto?", options: ["El refuerzo", "La matriz", "La unión entre refuerzo y matriz", "El aire entre componentes"], correct: 2, explanation: "Interfase = frontera crítica donde se transfiere carga. Mala adherencia = falla del compuesto."},
+    {question: "¿Qué determina la tenacidad en compuestos?", options: ["Solo el refuerzo", "Solo la matriz", "La desviación de grietas en la interfase", "El color"], correct: 2, explanation: "Interfase desvia grietas, evitando fractura catastrófica. Aumenta tenacidad respecto a cerámicos puros."},
+    {question: "¿Cuál es la banda de energía prohibida en semiconductores?", options: ["Energía de fusión", "Rango de energía sin estados electrónicos", "Energía de ionización", "Energía térmica"], correct: 1, explanation: "Brecha de energía (Eg) = diferencia entre banda de conducción y valencia. Define si es semiconductor, aislante o conductor."},
+    {question: "¿Qué es el dopaje tipo N?", options: ["Agregar átomos aceptores", "Agregar átomos donantes", "Calentar el material", "Aplicar presión"], correct: 1, explanation: "Dopaje N = agregar donantes (P, As en Si). Electrones libres = portadores mayoritarios. Conducción por electrones."},
+    {question: "¿Qué es el dopaje tipo P?", options: ["Agregar átomos donantes", "Agregar átomos aceptores", "Enfriar el material", "Aplicar campo eléctrico"], correct: 1, explanation: "Dopaje P = agregar aceptores (B, Ga en Si). Huecos = portadores mayoritarios. Conducción por huecos."},
+    {question: "¿Qué es una unión P-N?", options: ["Dos semiconductores puros", "Interfase entre dopaje P y N", "Conexión de dos cables", "Región de aislante"], correct: 1, explanation: "Unión P-N = frontera entre dopaje P y N. Crea región de agotamiento y potencial de barrera. Base de diodos."},
+    {question: "¿Cuál es la función de un diodo semiconductor?", options: ["Amplificar señales", "Rectificar corriente", "Generar luz", "Almacenar carga"], correct: 1, explanation: "Diodo = permite flujo en una dirección (polarización directa), bloquea en otra (inversa). Rectificador."},
+    {question: "¿Qué es un transistor BJT?", options: ["Diodo doble", "Tres terminales: base, colector, emisor", "Resistencia variable", "Capacitor especial"], correct: 1, explanation: "BJT = transistor bipolar. Pequeña corriente en base controla gran corriente colector-emisor. Amplificador."},
+    {question: "¿Qué es el procesamiento de materiales?", options: ["Solo fundición", "Transformación de materia prima en producto final", "Reciclaje", "Almacenamiento"], correct: 1, explanation: "Procesamiento = conjunto de operaciones (fundición, moldeo, tratamiento térmico) que modifican estructura y propiedades."},
+    {question: "¿Cuál es el objetivo del tratamiento térmico en aceros?", options: ["Cambiar color", "Modificar microestructura para mejorar propiedades", "Aumentar peso", "Reducir costo"], correct: 1, explanation: "Tratamiento térmico = temple, recocido, revenido. Modifica fases, tamaño de grano, dureza, ductilidad."},
+    {question: "¿Qué es la cristalinidad en polímeros?", options: ["Transparencia", "Grado de orden molecular", "Dureza absoluta", "Punto de fusión"], correct: 1, explanation: "Cristalinidad = % de zonas ordenadas vs amorfas. Mayor cristalinidad = mayor rigidez pero menor ductilidad."},
+    {question: "¿Cuál es la relación entre densidad y propiedades?", options: ["No existe relación", "Mayor densidad siempre = mejor", "Densidad afecta rigidez, conductividad, resistencia", "Solo afecta apariencia"], correct: 2, explanation: "Densidad = masa/volumen. Afecta todas las propiedades. Compuestos: baja densidad + alta resistencia."},
+    {question: "¿Qué es un material policristalino?", options: ["Un cristal perfecto", "Múltiples granos cristalinos con orientaciones aleatorias", "Material amorfo", "Polímero cristalino"], correct: 1, explanation: "Policristalino = muchos granos pequeños. Frontera de grano = defecto. Mayoría de metales y cerámicos."},
+    {question: "¿Qué es una dislocación?", options: ["Fractura", "Defecto lineal en la estructura", "Cambio de fase", "Deformación plástica"], correct: 1, explanation: "Dislocación = defecto lineal. Movimiento de dislocaciones = deformación plástica. Metales: móviles. Cerámicos: bloqueadas."},
+    {question: "¿Cuál es la diferencia entre deformación elástica y plástica?", options: ["No hay diferencia", "Elástica es reversible, plástica es permanente", "Plástica es más fuerte", "Elástica solo en metales"], correct: 1, explanation: "Elástica: material vuelve a forma original al quitar carga. Plástica: deformación permanente. Dislocaciones se mueven."},
+    {question: "¿Qué es el módulo de Young?", options: ["Densidad", "Rigidez = esfuerzo/deformación elástica", "Resistencia a tensión", "Ductilidad"], correct: 1, explanation: "E = σ/ε. Mide rigidez. Acero ~200 GPa, Aluminio ~70 GPa, Polímeros ~1-10 GPa."},
+    {question: "¿Qué es la resistencia a tensión?", options: ["Rigidez", "Máximo esfuerzo antes de fractura", "Deformación permanente", "Punto de fluencia"], correct: 1, explanation: "Resistencia = máximo esfuerzo que soporta. Acero ~400 MPa, Aluminio ~300 MPa, Cerámicos ~100-500 MPa."},
+    {question: "¿Qué es la ductilidad?", options: ["Dureza", "Capacidad de deformarse plásticamente sin romper", "Resistencia al calor", "Conductividad"], correct: 1, explanation: "Ductilidad = % elongación antes de fractura. Metales: altos (10-50%). Cerámicos: bajos (<1%)."},
+    {question: "¿Qué es la tenacidad?", options: ["Dureza", "Capacidad de absorber energía antes de fractura", "Resistencia al calor", "Elasticidad"], correct: 1, explanation: "Tenacidad = área bajo curva esfuerzo-deformación. Metales: altos. Cerámicos: bajos. Compuestos: intermedios-altos."},
+    {question: "¿Cuál es la diferencia entre dureza y fragilidad?", options: ["No hay diferencia", "Dureza=resistencia a rayado, fragilidad=fractura sin deformación", "Fragilidad es más fuerte", "Dureza solo en metales"], correct: 1, explanation: "Dureza = resistencia a penetración/rayado. Fragilidad = fractura sin deformación plástica. Cerámicos: duros y frágiles."},
+    {question: "¿Qué es la conductividad térmica?", options: ["Capacidad de cambiar temperatura", "Capacidad de transferir calor", "Resistencia al calor", "Punto de fusión"], correct: 1, explanation: "κ = calor/(tiempo×área×ΔT). Metales: altos (~100 W/m·K). Polímeros: bajos (~0.1-1). Cerámicos: intermedios."},
+    {question: "¿Qué es la conductividad eléctrica?", options: ["Resistencia", "Capacidad de conducir corriente", "Aislamiento", "Carga acumulada"], correct: 1, explanation: "σ = corriente/(voltaje×área). Metales: ~10^6 S/m. Semiconductores: ~10^-3 a 10^3. Aislantes: <10^-10."},
+    {question: "¿Cuál es la diferencia entre conductor, semiconductor y aislante?", options: ["No hay diferencia", "Diferencia en brecha de energía y portadores", "Solo en color", "Solo en densidad"], correct: 1, explanation: "Conductor: Eg~0, muchos portadores libres. Semiconductor: Eg~1-3 eV, portadores por dopaje. Aislante: Eg>5 eV, sin portadores."},
+    {question: "¿Qué es la resistencia a la corrosión?", options: ["Dureza", "Capacidad de resistir ataque químico", "Rigidez", "Conductividad"], correct: 1, explanation: "Corrosión = reacción química con ambiente. Acero inoxidable: resistente (Cr protege). Aluminio: óxido protege naturalmente."},
+    {question: "¿Qué es la resistencia al desgaste?", options: ["Dureza", "Capacidad de resistir fricción y abrasión", "Elasticidad", "Conductividad"], correct: 1, explanation: "Desgaste = pérdida de material por fricción. Depende de dureza, rugosidad, lubricación. Cerámicos: excelentes."},
+    {question: "¿Qué es la fatiga en materiales?", options: ["Cansancio del material", "Fractura por esfuerzo cíclico repetido", "Envejecimiento", "Oxidación"], correct: 1, explanation: "Fatiga = fractura bajo esfuerzo cíclico <resistencia estática. Causa: propagación lenta de grietas. Metales: crítico."},
+    {question: "¿Qué es la creep o fluencia?", options: ["Fractura rápida", "Deformación lenta bajo esfuerzo constante a alta T", "Cambio de fase", "Oxidación"], correct: 1, explanation: "Creep = deformación permanente lenta a T elevada. Crítico en turbinas, reactores nucleares. Polímeros: a T ambiente."},
+    {question: "¿Cuál es la relación entre temperatura y propiedades?", options: ["No existe relación", "Temperatura afecta todas las propiedades", "Solo afecta color", "Solo afecta densidad"], correct: 1, explanation: "T aumenta: movimiento atómico ↑, rigidez ↓, ductilidad ↑, resistencia ↓. Crítico en diseño de componentes."},
+    {question: "¿Qué es el coeficiente de expansión térmica?", options: ["Cambio de color", "Cambio de tamaño por cambio de temperatura", "Conductividad térmica", "Resistencia al calor"], correct: 1, explanation: "α = ΔL/(L₀×ΔT). Metales: ~10-20×10^-6/K. Polímeros: ~50-100×10^-6/K. Cerámicos: ~5-10×10^-6/K."},
+    {question: "¿Qué es el esfuerzo (stress)?", options: ["Deformación", "Fuerza aplicada por unidad de área", "Cambio de forma", "Energía interna"], correct: 1, explanation: "σ = F/A. Unidades: Pa, MPa, GPa. Esfuerzo de tensión, compresión, corte."},
+    {question: "¿Qué es la deformación (strain)?", options: ["Esfuerzo", "Cambio relativo de dimensión", "Fuerza aplicada", "Energía"], correct: 1, explanation: "ε = ΔL/L₀. Adimensional. Deformación de tensión, compresión, corte."},
+    {question: "¿Cuál es la ley de Hooke?", options: ["Esfuerzo = densidad", "Esfuerzo = E × deformación (elástico)", "Deformación = temperatura", "No existe ley"], correct: 1, explanation: "σ = E×ε. Válida en región elástica. Límite elástico = máximo esfuerzo antes de deformación plástica."},
+    {question: "¿Qué es el límite elástico?", options: ["Máxima deformación", "Máximo esfuerzo sin deformación permanente", "Punto de fractura", "Inicio de fusión"], correct: 1, explanation: "Límite elástico = esfuerzo donde comienza deformación plástica. Superarlo = dislocaciones se mueven permanentemente."},
+    {question: "¿Qué es el punto de fluencia?", options: ["Inicio de fusión", "Esfuerzo donde comienza deformación plástica significativa", "Máxima resistencia", "Fractura"], correct: 1, explanation: "Punto de fluencia = transición elástico-plástico. En metales: bien definido. En polímeros: gradual."},
+    {question: "¿Cuál es la diferencia entre resistencia de fluencia y resistencia a tensión?", options: ["No hay diferencia", "Fluencia: inicio plástico, Tensión: máximo antes de fractura", "Tensión es más baja", "Solo en polímeros"], correct: 1, explanation: "Fy = esfuerzo de fluencia. Fu = máximo esfuerzo. Fu > Fy siempre. Diferencia = endurecimiento por deformación."},
+    {question: "¿Qué es el endurecimiento por deformación?", options: ["Fractura", "Aumento de resistencia por deformación plástica", "Cambio de fase", "Oxidación"], correct: 1, explanation: "Deformación plástica = dislocaciones se multiplican y bloquean. Resultado: material se endurece. Usado en forja, trefilado."},
+    {question: "¿Qué es el recocido?", options: ["Enfriamiento rápido", "Calentamiento y enfriamiento lento para ablandar", "Tratamiento a baja T", "Oxidación controlada"], correct: 1, explanation: "Recocido = calentar a T alta, enfriar lentamente. Elimina dislocaciones, reduce dureza, aumenta ductilidad."},
+    {question: "¿Qué es el temple?", options: ["Calentamiento lento", "Enfriamiento rápido desde T alta", "Recocido", "Oxidación"], correct: 1, explanation: "Temple = enfriamiento rápido. Congela estructura de alta T. Aumenta dureza, reduce ductilidad. Aceros: crítico."},
+    {question: "¿Qué es el revenido?", options: ["Enfriamiento rápido", "Calentamiento moderado después de temple", "Recocido completo", "Oxidación"], correct: 1, explanation: "Revenido = calentar templado a T moderada. Reduce fragilidad del temple, equilibra dureza-ductilidad."},
+    {question: "¿Cuál es la diferencia entre cristalización y solidificación?", options: ["No hay diferencia", "Solidificación: transición L→S, Cristalización: formación de estructura ordenada", "Solo en polímeros", "Solo en metales"], correct: 1, explanation: "Solidificación = cambio de fase L→S. Cristalización = formación de estructura cristalina ordenada. Pueden ocurrir juntas."},
+    {question: "¿Qué es la nucleación?", options: ["Fusión", "Inicio de formación de nuevas fases", "Crecimiento de cristales", "Cambio de color"], correct: 1, explanation: "Nucleación = formación de pequeños cristales (núcleos). Requiere energía de activación. Homogénea vs heterogénea."},
+    {question: "¿Qué es el crecimiento de cristales?", options: ["Nucleación", "Expansión de núcleos existentes", "Fusión", "Oxidación"], correct: 1, explanation: "Crecimiento = átomos se adhieren a núcleos. Velocidad depende de T, composición, agitación. Tamaño de grano resultante."},
+    {question: "¿Qué es el tamaño de grano?", options: ["Densidad", "Tamaño promedio de cristales individuales", "Dureza", "Conductividad"], correct: 1, explanation: "Grano = cristal individual. Tamaño ↓ = dureza ↑, ductilidad ↓ (Hall-Petch). Frontera de grano = defecto."},
+    {question: "¿Cuál es la relación entre tamaño de grano y propiedades?", options: ["No existe relación", "Grano fino = más duro, menos dúctil", "Grano grande = mejor", "Solo afecta color"], correct: 1, explanation: "Grano fino: más fronteras = más obstáculos a dislocaciones = dureza ↑. Pero ductilidad ↓ (menos movimiento)."},
+    {question: "¿Qué es una fase en materiales?", options: ["Etapa de procesamiento", "Región con estructura y composición uniformes", "Cambio de temperatura", "Oxidación"], correct: 1, explanation: "Fase = región homogénea. Ejemplo: acero = ferrita (α) + cementita (Fe₃C). Diagrama de fases: composición vs T."},
+    {question: "¿Qué es un diagrama de fases?", options: ["Gráfico de temperatura", "Mapa de fases estables vs composición y temperatura", "Curva de enfriamiento", "Tabla de propiedades"], correct: 1, explanation: "Diagrama de fases = T vs composición. Muestra regiones de estabilidad de fases. Ejemplo: Fe-C para aceros."},
+    {question: "¿Qué es la solubilidad sólida?", options: ["Capacidad de disolver en agua", "Capacidad de un elemento disolver otro en estado sólido", "Fusión", "Oxidación"], correct: 1, explanation: "Solubilidad sólida = máximo % de soluto en solvente sólido. Limitada por tamaño atómico, electronegatividad. Ejemplo: C en Fe."},
+    {question: "¿Qué es una solución sólida?", options: ["Mezcla física", "Aleación donde un elemento disuelve otro", "Compuesto químico", "Mezcla de gases"], correct: 1, explanation: "Solución sólida = aleación homogénea de una fase. Ejemplo: latón (Cu+Zn). Propiedades intermedias a componentes."},
+    {question: "¿Qué es un compuesto intermetálico?", options: ["Metal puro", "Compuesto químico de dos o más metales", "Aleación física", "Cerámico"], correct: 1, explanation: "Intermetálico = compuesto definido (ej: Fe₃Al). Estructura ordenada. Propiedades únicas, a menudo frágil."},
+    {question: "¿Cuál es la diferencia entre una aleación y un compuesto?", options: ["No hay diferencia", "Aleación: mezcla física, Compuesto: unión química", "Aleación es más fuerte", "Solo en metales"], correct: 1, explanation: "Aleación = mezcla de metales (solución sólida). Compuesto = unión química con estequiometría fija. Propiedades diferentes."},
+    {question: "¿Qué es el carburo de tungsteno?", options: ["Aleación", "Compuesto cerámico WC", "Polímero", "Semiconductor"], correct: 1, explanation: "WC = cerámico duro (dureza ~9 Mohs). Usado en herramientas de corte. Baja tenacidad pero excelente dureza."},
+    {question: "¿Qué es la sinterización?", options: ["Fusión", "Compactación de polvos a T elevada sin fusión", "Oxidación", "Cristalización"], correct: 1, explanation: "Sinterización = calentar polvo compactado a T<Tm. Difusión atómica une partículas. Usado en cerámicos, polvos metálicos."},
+    {question: "¿Cuál es la ventaja de la sinterización?", options: ["Bajo costo", "Permite formas complejas, menos desperdicio, propiedades controladas", "Mayor resistencia", "Mejor conductividad"], correct: 1, explanation: "Sinterización = flexible en forma, composición controlada, menos maquinado. Ideal para cerámicos, carburos, polvos."},
+    {question: "¿Qué es la densificación en sinterización?", options: ["Aumento de temperatura", "Reducción de porosidad por difusión atómica", "Cambio de fase", "Oxidación"], correct: 1, explanation: "Densificación = poros desaparecen, densidad ↑. Resultado: material más fuerte, menos permeable."},
+    {question: "¿Qué es el moldeo por inyección?", options: ["Fundición", "Inyección de polímero fundido en molde", "Extrusión", "Compresión"], correct: 1, explanation: "Moldeo por inyección = polímero fundido → molde → enfriamiento → pieza. Rápido, preciso, económico para producción masiva."},
+    {question: "¿Qué es la extrusión?", options: ["Moldeo", "Forzar material a través de matriz", "Inyección", "Compresión"], correct: 1, explanation: "Extrusión = material fundido/plástico forzado por matriz. Produce perfiles, tubos, láminas. Continuo, económico."},
+    {question: "¿Qué es la laminación?", options: ["Moldeo", "Pasar material entre rodillos para reducir espesor", "Extrusión", "Forja"], correct: 1, explanation: "Laminación = rodillos reducen espesor, crean textura. Produce láminas, placas. Alinea granos = anisotropía."},
+    {question: "¿Qué es la forja?", options: ["Fundición", "Deformación plástica controlada con golpes/presión", "Moldeo", "Extrusión"], correct: 1, explanation: "Forja = golpes/presión deforman metal caliente. Refina grano, mejora propiedades. Usado en herramientas, piezas críticas."},
+    {question: "¿Cuál es la diferencia entre forja en caliente y en frío?", options: ["No hay diferencia", "Caliente: T>Tm, Frío: T ambiente", "Caliente: T>recristalización, Frío: T ambiente", "Solo en acero"], correct: 2, explanation: "Forja caliente: T alta, baja resistencia, evita endurecimiento. Forja fría: T ambiente, endurece, requiere más fuerza."},
+    {question: "¿Qué es la fundición?", options: ["Forja", "Vertido de metal fundido en molde", "Extrusión", "Laminación"], correct: 1, explanation: "Fundición = metal fundido → molde → solidificación → pieza. Permite formas complejas, pero grano grueso, porosidad."},
+    {question: "¿Cuál es la diferencia entre fundición de arena y molde permanente?", options: ["No hay diferencia", "Arena: molde desechable, Permanente: molde reutilizable", "Arena es más fuerte", "Solo en acero"], correct: 1, explanation: "Arena: molde de arena, económico, formas complejas. Permanente: molde metálico, mejor acabado, más caro."},
+    {question: "¿Qué es la soldadura?", options: ["Unión mecánica", "Unión metalúrgica de dos piezas", "Pegamento", "Remachado"], correct: 1, explanation: "Soldadura = fusión de dos metales, crean unión. Tipos: arco, TIG, MIG. Requiere control de microestructura."},
+    {question: "¿Qué es la difusión atómica?", options: ["Movimiento aleatorio", "Movimiento de átomos de alta a baja concentración", "Cambio de fase", "Oxidación"], correct: 1, explanation: "Difusión = movimiento atómico aleatorio. Neto: alta C → baja C. Velocidad ∝ T. Crítica en sinterización, tratamiento térmico."},
+    {question: "¿Cuál es la ley de Fick?", options: ["Esfuerzo = densidad", "Flujo de difusión ∝ gradiente de concentración", "Ley de fases", "Ley de Hooke"], correct: 1, explanation: "J = -D×(dC/dx). Flujo = coeficiente difusión × gradiente. Base de fenómenos de difusión en materiales."},
+    {question: "¿Qué es la energía de activación?", options: ["Energía térmica", "Energía mínima para iniciar un proceso", "Energía de fusión", "Energía de enlace"], correct: 1, explanation: "Ea = energía para romper enlace, permitir movimiento. Mayor Ea = proceso más lento. Aumenta exponencialmente con T."},
+    {question: "¿Cuál es la relación entre temperatura y velocidad de difusión?", options: ["No existe relación", "T ↑ → difusión ↑ exponencialmente", "T ↑ → difusión ↓", "Solo en polímeros"], correct: 1, explanation: "Difusión ∝ exp(-Ea/kT). Pequeño aumento T = gran aumento difusión. Crítico en procesamiento a alta T."},
+    {question: "¿Qué es la recristalización?", options: ["Solidificación", "Formación de nuevos granos sin cambio de fase", "Cambio de fase", "Oxidación"], correct: 1, explanation: "Recristalización = nuevos granos nuclean y crecen, reemplazan granos deformados. Ocurre a T > 0.4Tm. Elimina endurecimiento."},
+    {question: "¿Cuál es la temperatura de recristalización?", options: ["Punto de fusión", "~0.4 Tm (temperatura absoluta)", "Temperatura ambiente", "Temperatura de Debye"], correct: 1, explanation: "Trec ≈ 0.4 Tm (K). Acero: ~400°C. Aluminio: ~150°C. Depende de pureza, deformación previa."},
+    {question: "¿Qué es el crecimiento anormal de grano?", options: ["Nucleación", "Algunos granos crecen mucho más que otros", "Recristalización", "Solidificación"], correct: 1, explanation: "Crecimiento anormal = granos grandes consumen pequeños. Resultado: microestructura heterogénea, propiedades variables."},
+    {question: "¿Qué es la textura cristalográfica?", options: ["Rugosidad superficial", "Orientación preferente de granos", "Tamaño de grano", "Porosidad"], correct: 1, explanation: "Textura = granos orientados preferencialmente (ej: laminación). Resultado: anisotropía de propiedades."},
+    {question: "¿Cuál es la diferencia entre defecto puntual y lineal?", options: ["No hay diferencia", "Puntual: vacancia/intersticio, Lineal: dislocación", "Lineal es más pequeño", "Solo en metales"], correct: 1, explanation: "Puntual: afecta 1 sitio atómico. Lineal (dislocación): afecta línea de átomos. Lineal = más importante en deformación."},
+    {question: "¿Qué es una vacancia?", options: ["Intersticio", "Sitio atómico vacío en la red", "Dislocación", "Frontera de grano"], correct: 1, explanation: "Vacancia = átomo falta en su sitio. Defecto puntual. Facilita difusión. Concentración ↑ con T."},
+    {question: "¿Qué es un intersticio?", options: ["Vacancia", "Átomo en posición no equilibrio entre sitios", "Dislocación", "Frontera de grano"], correct: 1, explanation: "Intersticio = átomo en posición entre sitios normales. Defecto puntual. Causa distorsión local de red."},
+    {question: "¿Qué es una frontera de grano?", options: ["Superficie del material", "Interfase entre dos granos con orientaciones diferentes", "Defecto puntual", "Dislocación"], correct: 1, explanation: "Frontera de grano = interfase entre granos. Defecto planar. Obstaculiza dislocaciones (Hall-Petch)."},
+    {question: "¿Qué es una macla?", options: ["Defecto puntual", "Región con estructura espejo de grano adyacente", "Dislocación", "Vacancia"], correct: 1, explanation: "Macla = región con estructura reflejada. Defecto planar. Ocurre en deformación, recocido. Afecta propiedades."},
+    {question: "¿Qué es un precipitado?", options: ["Fase líquida", "Fase sólida que forma dentro de matriz", "Defecto puntual", "Vacancia"], correct: 1, explanation: "Precipitado = partícula de nueva fase dentro de matriz. Endurece por obstaculizar dislocaciones (endurecimiento por precipitación)."},
+    {question: "¿Cuál es la diferencia entre endurecimiento por solución sólida y por precipitación?", options: ["No hay diferencia", "Solución: átomos disueltos, Precipitación: partículas de nueva fase", "Solución es más fuerte", "Solo en acero"], correct: 1, explanation: "Solución sólida: átomos disueltos distorsionan red. Precipitación: partículas duras obstaculizan dislocaciones. Precipitación > fuerte."},
+    {question: "¿Qué es el envejecimiento en aleaciones?", options: ["Oxidación", "Cambio de propiedades con tiempo a T ambiente o moderada", "Corrosión", "Fatiga"], correct: 1, explanation: "Envejecimiento = precipitación lenta a T baja. Ejemplo: Al-Cu endurecido por envejecimiento. Aumenta dureza con tiempo."},
+    {question: "¿Qué es la acritud?", options: ["Fragilidad", "Endurecimiento por deformación en frío", "Ductilidad", "Elasticidad"], correct: 1, explanation: "Acritud = dureza ganada por deformación plástica. Dislocaciones se multiplican y bloquean. Reversible por recocido."},
+    {question: "¿Cuál es la diferencia entre material dúctil y frágil?", options: ["No hay diferencia", "Dúctil: deformación plástica antes de fractura, Frágil: fractura sin deformación", "Frágil es más fuerte", "Solo en metales"], correct: 1, explanation: "Dúctil: aviso antes de falla (deformación). Frágil: falla repentina sin aviso. Cerámicos: frágiles. Metales: dúctiles."},
+    {question: "¿Qué es la transición dúctil-frágil?", options: ["Cambio de fase", "Cambio de comportamiento con T", "Cambio de composición", "Oxidación"], correct: 1, explanation: "T baja → frágil. T alta → dúctil. Temperatura de transición = donde cambia comportamiento. Aceros: crítico en bajas T."},
+    {question: "¿Qué es la tenacidad a la fractura (Kic)?", options: ["Dureza", "Resistencia a propagación de grieta", "Ductilidad", "Elasticidad"], correct: 1, explanation: "Kic = resistencia a fractura en presencia de grieta. Unidades: MPa√m. Metales: altos. Cerámicos: bajos. Compuestos: intermedios."},
+    {question: "¿Qué es la mecánica de fractura?", options: ["Estudio de fracturas", "Estudio de propagación de grietas y falla", "Estudio de deformación", "Estudio de difusión"], correct: 1, explanation: "Mecánica de fractura = análisis de grietas, propagación, Kic. Predice falla. Crítica en diseño de estructuras."},
+    {question: "¿Qué es una grieta crítica?", options: ["Grieta pequeña", "Tamaño mínimo de grieta que propaga", "Grieta superficial", "Grieta interna"], correct: 1, explanation: "Grieta crítica = tamaño donde K ≥ Kic. Propaga sin aumento de carga. Depende de material, esfuerzo, geometría."},
+    {question: "¿Cuál es la relación entre tamaño de grieta y resistencia?", options: ["No existe relación", "Grieta grande → resistencia baja", "Grieta grande → resistencia alta", "Solo en cerámicos"], correct: 1, explanation: "Resistencia ∝ 1/√(tamaño grieta). Grieta pequeña = resistencia alta. Grieta grande = resistencia baja. Crítico en diseño."}
 ];
 
-// ===== DATOS DE FLASHCARDS =====
-const flashcards = [
-    { front: "Enlace Metálico", back: "Nube de electrones móviles que permite conducción eléctrica y térmica." },
-    { front: "Enlace Iónico", back: "Transferencia de electrones entre átomos, formando cationes y aniones." },
-    { front: "Enlace Covalente", back: "Compartición de electrones entre átomos para alcanzar estabilidad." },
-    { front: "Alotropía", back: "Capacidad de un elemento puro para existir en múltiples formas cristalinas." },
-    { front: "Polimorfismo", back: "Capacidad de un compuesto para cristalizar en más de una estructura." },
-    { front: "Isotropía", back: "Propiedades iguales en todas las direcciones del material." },
-    { front: "Anisotropía", back: "Propiedades que varían según la dirección del material." },
-    { front: "Monómero", back: "Unidad molecular pequeña que se repite para formar un polímero." },
-    { front: "Polímero", back: "Macromolécula formada por la repetición de monómeros unidos por enlaces covalentes." },
-    { front: "Termoplástico", back: "Polímero que se funde al calentarse y se solidifica al enfriar." },
-    { front: "Termoestable", back: "Polímero que no se funde, se quema antes de cambiar de estado." },
-    { front: "Elastómero", back: "Polímero con gran elasticidad y capacidad de recuperar su forma." },
-    { front: "Cristalinidad", back: "Grado de orden en la estructura molecular de un polímero." },
-    { front: "Temperatura de Transición Vítrea (Tg)", back: "Temperatura a la que un polímero pasa de estado vítreo a gomoso." },
-    { front: "Punto de Fusión (Tm)", back: "Temperatura a la que un material sólido se convierte en líquido." },
-    { front: "Dureza", back: "Resistencia de un material a la deformación o rayado." },
-    { front: "Ductilidad", back: "Capacidad de un material para deformarse sin romperse." },
-    { front: "Fragilidad", back: "Tendencia de un material a romperse sin deformación previa." },
-    { front: "Tenacidad", back: "Capacidad de un material para absorber energía antes de fracturarse." },
-    { front: "Resistencia a la Compresión", back: "Capacidad de un material para soportar fuerzas de compresión." },
-    { front: "Módulo de Young", back: "Medida de la rigidez de un material bajo esfuerzo de tracción." },
-    { front: "Cerámica", back: "Material inorgánico no metálico formado por combinación de elementos metálicos y no metálicos." },
-    { front: "Refractario", back: "Cerámica diseñada para mantener propiedades a temperaturas muy elevadas (>1500°C)." },
-    { front: "Vidrio", back: "Cerámica amorfa formada por enfriamiento rápido de un líquido fundido." },
-    { front: "Material Compuesto", back: "Combinación de dos o más materiales con propiedades diferentes." },
-    { front: "Matriz", back: "Material continuo que rodea y soporta al refuerzo en un compuesto." },
-    { front: "Refuerzo", back: "Fase dispersa que proporciona resistencia al compuesto." },
-    { front: "Interfase", back: "Límite entre la matriz y el refuerzo donde ocurre la transferencia de carga." },
-    { front: "Fibra de Carbono", back: "Refuerzo de alta resistencia y bajo peso usado en compuestos avanzados." },
-    { front: "Laminado", back: "Compuesto formado por capas de material reforzado." },
-    { front: "Semiconductor", back: "Material con conductividad eléctrica intermedia entre conductores y aislantes." },
-    { front: "Dopaje", back: "Introducción de impurezas en un semiconductor para modificar su conductividad." },
-    { front: "Dopaje Tipo N", back: "Adición de átomos donantes (P, As) que aportan electrones libres." },
-    { front: "Dopaje Tipo P", back: "Adición de átomos aceptores (B, Ga) que crean huecos positivos." },
-    { front: "Unión P-N", back: "Interfaz entre regiones dopadas tipo p y tipo n que forma un diodo." },
-    { front: "Brecha de Energía (Eg)", back: "Diferencia de energía entre la banda de conducción y la de valencia." },
-    { front: "Banda de Valencia", back: "Banda de energía más externa con electrones débilmente ligados." },
-    { front: "Banda de Conducción", back: "Banda de energía donde los electrones pueden moverse libremente." },
-    { front: "Diodo", back: "Dispositivo semiconductor que permite el flujo de corriente en una dirección." },
-    { front: "Transistor", back: "Dispositivo semiconductor que amplifica o conmuta señales eléctricas." },
-    { front: "Circuito Integrado", back: "Dispositivo que contiene miles o millones de transistores en un chip." },
-    { front: "LED", back: "Diodo emisor de luz que emite fotones al conducir corriente." },
-    { front: "Celda Solar", back: "Dispositivo que convierte luz en electricidad mediante el efecto fotovoltaico." },
-    { front: "Estructura Cristalina", back: "Arreglo periódico tridimensional de átomos en un material." },
-    { front: "Grano", back: "Región de un material policristalino con orientación cristalina única." },
-    { front: "Frontera de Grano", back: "Interfaz entre granos con diferentes orientaciones cristalinas." },
-    { front: "Defecto Puntual", back: "Defecto cristalino localizado en un punto (vacancia, intersticio)." },
-    { front: "Dislocación", back: "Defecto lineal que permite el movimiento de átomos bajo esfuerzo." },
-    { front: "Tratamiento Térmico", back: "Proceso de calentamiento y enfriamiento controlado para modificar propiedades." },
-    { front: "Temple", back: "Enfriamiento rápido para congelar una estructura de alta temperatura." },
-    { front: "Recocido", back: "Calentamiento seguido de enfriamiento lento para aliviar tensiones." },
-    { front: "Revenido", back: "Calentamiento moderado después del temple para mejorar tenacidad." },
-    { front: "Austenita", back: "Fase FCC del hierro estable entre 912°C y 1394°C, soluble en carbono." },
-    { front: "Ferrita", back: "Fase BCC del hierro estable a temperatura ambiente, magnética." },
-    { front: "Cementita", back: "Compuesto Fe₃C muy duro formado en aceros." },
-    { front: "Perlita", back: "Microestructura laminada de ferrita y cementita en aceros." },
-    { front: "Martensita", back: "Fase metaestable dura formada por temple rápido de austenita." },
-    { front: "Acero", back: "Aleación de hierro y carbono (0.02-2% C) con excelente combinación de propiedades." },
-    { front: "Hierro Fundido", back: "Aleación de Fe-C (2-4% C) con buena fundibilidad pero frágil." },
-    { front: "Aleación", back: "Combinación de dos o más elementos metálicos para mejorar propiedades." },
-    { front: "Solución Sólida", back: "Fase única donde un elemento está disuelto en otro." },
-    { front: "Procesamiento de Materiales", back: "Conjunto de operaciones para transformar materias primas en productos útiles." },
-    { front: "Sinterización", back: "Proceso de calentamiento que une partículas sin llegar a la fusión." },
-    { front: "Moldeo por Inyección", back: "Proceso de inyectar material fundido en un molde bajo presión." },
-    { front: "Extrusión", back: "Proceso de forzar material a través de un orificio para crear formas." },
-    { front: "Laminado", back: "Proceso de reducir espesor pasando material entre rodillos." },
-    { front: "Forjado", back: "Proceso de deformación plástica bajo calor y presión." },
-    { front: "Índice de Desempeño", back: "Relación matemática que relaciona propiedades para optimizar diseño." },
-    { front: "Relación R/ρ", back: "Índice de resistencia específica (resistencia/densidad)." },
-    { front: "Relación E/ρ", back: "Índice de rigidez específica (módulo/densidad)." },
-    { front: "Matriz de Decisión", back: "Herramienta para comparar múltiples opciones bajo varios criterios." },
-    { front: "Trade-off", back: "Compromiso entre dos propiedades que no pueden optimizarse simultáneamente." },
-    { front: "Selección de Materiales", back: "Proceso de elegir el material óptimo para una aplicación específica." },
-    { front: "Restricción de Diseño", back: "Límite que debe cumplirse obligatoriamente en el diseño." },
-    { front: "Objetivo de Diseño", back: "Meta que se busca optimizar (minimizar o maximizar)." },
-    { front: "Función del Componente", back: "Rol específico que debe cumplir un material en una aplicación." }
+// ===== FLASHCARDS (70+ CONCEPTOS) =====
+const flashcardsData = [
+    {front: "¿Qué es la alotropía?", back: "Capacidad de un elemento puro para existir en múltiples formas cristalinas bajo diferentes condiciones de T y P."},
+    {front: "¿Qué es el polimorfismo?", back: "Capacidad de un compuesto para cristalizar en diferentes estructuras cristalinas con la misma composición química."},
+    {front: "¿Qué es la isotropía?", back: "Propiedad de un material cuyas propiedades son iguales en todas las direcciones."},
+    {front: "¿Qué es la anisotropía?", back: "Propiedad de un material cuyas propiedades varían según la dirección cristalográfica."},
+    {front: "¿Qué es un monómero?", back: "Unidad molecular pequeña que se repite para formar un polímero."},
+    {front: "¿Qué es un polímero?", back: "Macromolécula formada por repetición de monómeros unidos por enlaces covalentes."},
+    {front: "¿Qué es la cristalinidad?", back: "Grado de orden molecular en un polímero. Mayor cristalinidad = mayor rigidez pero menor ductilidad."},
+    {front: "¿Qué es la Tg (Temperatura de Transición Vítrea)?", back: "Temperatura donde un polímero pasa de estado vítreo (rígido) a gomoso (flexible), sin fundirse."},
+    {front: "¿Qué es un cerámico?", back: "Material inorgánico no metálico formado por combinación de elementos metálicos y no metálicos, con enlaces iónico-covalentes."},
+    {front: "¿Qué es un refractario?", back: "Cerámico diseñado para resistir temperaturas extremadamente altas (>1500°C) sin perder propiedades."},
+    {front: "¿Qué es un material compuesto?", back: "Material formado por combinación de dos o más fases: refuerzo + matriz."},
+    {front: "¿Qué es la interfase en compuestos?", back: "Frontera crítica entre refuerzo y matriz donde se transfiere carga."},
+    {front: "¿Qué es la tenacidad?", back: "Capacidad de un material para absorber energía antes de fracturar."},
+    {front: "¿Qué es la ductilidad?", back: "Capacidad de un material para deformarse plásticamente sin romper."},
+    {front: "¿Qué es la fragilidad?", back: "Tendencia de un material a fracturar sin deformación plástica previa."},
+    {front: "¿Qué es la dureza?", back: "Resistencia de un material a la penetración, rayado o deformación superficial."},
+    {front: "¿Qué es el esfuerzo (stress)?", back: "Fuerza aplicada por unidad de área. Unidades: Pa, MPa, GPa."},
+    {front: "¿Qué es la deformación (strain)?", back: "Cambio relativo de dimensión. Adimensional: ε = ΔL/L₀."},
+    {front: "¿Qué es el módulo de Young (E)?", back: "Medida de rigidez. E = esfuerzo/deformación elástica."},
+    {front: "¿Qué es la resistencia a tensión?", back: "Máximo esfuerzo que soporta un material antes de fracturar."},
+    {front: "¿Qué es el límite elástico?", back: "Máximo esfuerzo sin deformación permanente. Superarlo = comienza deformación plástica."},
+    {front: "¿Qué es el punto de fluencia?", back: "Esfuerzo donde comienza deformación plástica significativa."},
+    {front: "¿Qué es la ley de Hooke?", back: "σ = E×ε. Válida en región elástica. Relación lineal entre esfuerzo y deformación."},
+    {front: "¿Qué es el endurecimiento por deformación?", back: "Aumento de resistencia por deformación plástica. Dislocaciones se multiplican y bloquean."},
+    {front: "¿Qué es el recocido?", back: "Calentamiento y enfriamiento lento para ablandar. Elimina dislocaciones, reduce dureza, aumenta ductilidad."},
+    {front: "¿Qué es el temple?", back: "Enfriamiento rápido desde temperatura alta. Aumenta dureza, reduce ductilidad."},
+    {front: "¿Qué es el revenido?", back: "Calentamiento moderado después de temple. Reduce fragilidad, equilibra dureza-ductilidad."},
+    {front: "¿Qué es la conducción térmica?", back: "Transferencia de calor a través de un material. κ = calor/(tiempo×área×ΔT)."},
+    {front: "¿Qué es la conducción eléctrica?", back: "Capacidad de un material para conducir corriente eléctrica. σ = corriente/(voltaje×área)."},
+    {front: "¿Qué es un conductor?", back: "Material con brecha de energía ~0 y muchos portadores libres. Ejemplo: cobre, aluminio."},
+    {front: "¿Qué es un semiconductor?", back: "Material con brecha de energía 1-3 eV. Portadores por dopaje. Ejemplo: silicio, germanio."},
+    {front: "¿Qué es un aislante?", back: "Material con brecha de energía >5 eV. Sin portadores libres. Ejemplo: vidrio, cerámica."},
+    {front: "¿Qué es el dopaje tipo N?", back: "Agregar átomos donantes (P, As en Si). Electrones libres = portadores mayoritarios."},
+    {front: "¿Qué es el dopaje tipo P?", back: "Agregar átomos aceptores (B, Ga en Si). Huecos = portadores mayoritarios."},
+    {front: "¿Qué es una unión P-N?", back: "Interfase entre dopaje P y N. Crea región de agotamiento y potencial de barrera. Base de diodos."},
+    {front: "¿Qué es un diodo?", back: "Dispositivo semiconductor que permite flujo de corriente en una dirección (polarización directa)."},
+    {front: "¿Qué es un transistor BJT?", back: "Transistor bipolar con tres terminales: base, colector, emisor. Amplificador de corriente."},
+    {front: "¿Qué es un transistor FET?", back: "Transistor de efecto de campo. Controlado por voltaje, no corriente. Menor consumo."},
+    {front: "¿Qué es la densidad?", back: "Masa por unidad de volumen. ρ = m/V. Unidades: g/cm³, kg/m³."},
+    {front: "¿Qué es la porosidad?", back: "Fracción de volumen de poros en un material. Afecta densidad, resistencia, permeabilidad."},
+    {front: "¿Qué es la nucleación?", back: "Inicio de formación de nuevas fases. Requiere energía de activación. Homogénea vs heterogénea."},
+    {front: "¿Qué es el crecimiento de cristales?", back: "Expansión de núcleos existentes. Velocidad depende de T, composición, agitación."},
+    {front: "¿Qué es el tamaño de grano?", back: "Tamaño promedio de cristales individuales. Grano fino = más duro, menos dúctil."},
+    {front: "¿Qué es una dislocación?", back: "Defecto lineal en la estructura cristalina. Movimiento = deformación plástica."},
+    {front: "¿Qué es una vacancia?", back: "Sitio atómico vacío en la red. Defecto puntual. Facilita difusión."},
+    {front: "¿Qué es un intersticio?", back: "Átomo en posición entre sitios normales. Defecto puntual. Causa distorsión local."},
+    {front: "¿Qué es una frontera de grano?", back: "Interfase entre dos granos con orientaciones diferentes. Defecto planar. Obstaculiza dislocaciones."},
+    {front: "¿Qué es una macla?", back: "Región con estructura espejo de grano adyacente. Defecto planar. Afecta propiedades."},
+    {front: "¿Qué es un precipitado?", back: "Fase sólida que forma dentro de matriz. Endurece por obstaculizar dislocaciones."},
+    {front: "¿Qué es la difusión?", back: "Movimiento de átomos de alta a baja concentración. Velocidad ∝ T."},
+    {front: "¿Qué es la ley de Fick?", back: "J = -D×(dC/dx). Flujo de difusión proporcional al gradiente de concentración."},
+    {front: "¿Qué es la energía de activación?", back: "Energía mínima para iniciar un proceso. Mayor Ea = proceso más lento."},
+    {front: "¿Qué es la recristalización?", back: "Formación de nuevos granos sin cambio de fase. Ocurre a T > 0.4Tm."},
+    {front: "¿Qué es la sinterización?", back: "Compactación de polvos a T elevada sin fusión. Difusión atómica une partículas."},
+    {front: "¿Qué es el moldeo por inyección?", back: "Inyección de polímero fundido en molde. Rápido, preciso, económico para producción masiva."},
+    {front: "¿Qué es la extrusión?", back: "Forzar material a través de matriz. Produce perfiles, tubos, láminas. Continuo, económico."},
+    {front: "¿Qué es la laminación?", back: "Pasar material entre rodillos. Reduce espesor, crea textura, alinea granos."},
+    {front: "¿Qué es la forja?", back: "Deformación plástica controlada con golpes/presión. Refina grano, mejora propiedades."},
+    {front: "¿Qué es la fundición?", back: "Vertido de metal fundido en molde. Permite formas complejas, pero grano grueso."},
+    {front: "¿Qué es la soldadura?", back: "Unión metalúrgica de dos piezas. Requiere control de microestructura."},
+    {front: "¿Qué es la corrosión?", back: "Reacción química de material con ambiente. Pérdida de material, cambio de propiedades."},
+    {front: "¿Qué es el desgaste?", back: "Pérdida de material por fricción y abrasión. Depende de dureza, rugosidad, lubricación."},
+    {front: "¿Qué es la fatiga?", back: "Fractura por esfuerzo cíclico repetido. Causa: propagación lenta de grietas."},
+    {front: "¿Qué es la creep o fluencia?", back: "Deformación lenta bajo esfuerzo constante a alta T. Crítico en turbinas, reactores."},
+    {front: "¿Qué es la tenacidad a la fractura (Kic)?", back: "Resistencia a propagación de grieta. Unidades: MPa√m. Metales: altos, Cerámicos: bajos."},
+    {front: "¿Qué es la mecánica de fractura?", back: "Estudio de propagación de grietas y falla. Predice falla en presencia de defectos."},
+    {front: "¿Qué es la matriz de Ashby?", back: "Gráfico log-log de propiedades vs densidad. Herramienta para selección de materiales."},
+    {front: "¿Qué es un índice de desempeño?", back: "Relación de propiedades que optimiza función. Ejemplo: R/ρ (resistencia/peso)."}
 ];
 
-// ===== DATOS DE MATERIALES PARA CLASIFICADOR (35 MATERIALES) =====
-const materialsData = [
-    // Metales (10)
-    { name: "Acero", category: "Metales" },
-    { name: "Aluminio", category: "Metales" },
-    { name: "Cobre", category: "Metales" },
-    { name: "Titanio", category: "Metales" },
-    { name: "Níquel", category: "Metales" },
-    { name: "Magnesio", category: "Metales" },
-    { name: "Zinc", category: "Metales" },
-    { name: "Plomo", category: "Metales" },
-    { name: "Tungsteno", category: "Metales" },
-    { name: "Molibdeno", category: "Metales" },
-    
-    // Polímeros (10)
-    { name: "Polietileno", category: "Polímeros" },
-    { name: "Poliestireno", category: "Polímeros" },
-    { name: "PVC", category: "Polímeros" },
-    { name: "Nylon", category: "Polímeros" },
-    { name: "Policarbonato", category: "Polímeros" },
-    { name: "Acrílico", category: "Polímeros" },
-    { name: "PET", category: "Polímeros" },
-    { name: "PTFE (Teflón)", category: "Polímeros" },
-    { name: "ABS", category: "Polímeros" },
-    { name: "Poliuretano", category: "Polímeros" },
-    
-    // Cerámicos (8)
-    { name: "Alúmina", category: "Cerámicos" },
-    { name: "Sílice", category: "Cerámicos" },
-    { name: "Zirconia", category: "Cerámicos" },
-    { name: "Carburo de Silicio", category: "Cerámicos" },
-    { name: "Vidrio", category: "Cerámicos" },
-    { name: "Nitruro de Silicio", category: "Cerámicos" },
-    { name: "Magnesia", category: "Cerámicos" },
-    { name: "Porcelana", category: "Cerámicos" },
-    
-    // Compuestos (7)
-    { name: "Fibra de Carbono/Epoxi", category: "Compuestos" },
-    { name: "Fibra de Vidrio/Poliéster", category: "Compuestos" },
-    { name: "Kevlar/Epoxi", category: "Compuestos" },
-    { name: "Carbono/Carbono", category: "Compuestos" },
-    { name: "Metal/Cerámica", category: "Compuestos" },
-    { name: "Madera", category: "Compuestos" },
-    { name: "Hormigón", category: "Compuestos" }
+// ===== MATERIALES PARA CLASIFICADOR (35 MATERIALES) =====
+const materialsClassifier = [
+    {name: "Hierro", category: "Metales"},
+    {name: "Cobre", category: "Metales"},
+    {name: "Aluminio", category: "Metales"},
+    {name: "Titanio", category: "Metales"},
+    {name: "Níquel", category: "Metales"},
+    {name: "Magnesio", category: "Metales"},
+    {name: "Acero", category: "Metales"},
+    {name: "Latón", category: "Metales"},
+    {name: "Polietileno (PE)", category: "Polímeros"},
+    {name: "PVC", category: "Polímeros"},
+    {name: "Poliestireno (PS)", category: "Polímeros"},
+    {name: "Nylon", category: "Polímeros"},
+    {name: "Teflón (PTFE)", category: "Polímeros"},
+    {name: "Policarbonato", category: "Polímeros"},
+    {name: "Alúmina (Al₂O₃)", category: "Cerámicos"},
+    {name: "Sílice (SiO₂)", category: "Cerámicos"},
+    {name: "Zirconia (ZrO₂)", category: "Cerámicos"},
+    {name: "Carburo de Silicio (SiC)", category: "Cerámicos"},
+    {name: "Nitruro de Silicio (Si₃N₄)", category: "Cerámicos"},
+    {name: "Vidrio", category: "Cerámicos"},
+    {name: "Fibra de Carbono", category: "Compuestos"},
+    {name: "Fibra de Vidrio", category: "Compuestos"},
+    {name: "Aramida (Kevlar)", category: "Compuestos"},
+    {name: "Matriz Epóxica", category: "Compuestos"},
+    {name: "Silicio (Si)", category: "Semiconductores"},
+    {name: "Germanio (Ge)", category: "Semiconductores"},
+    {name: "Arseniuro de Galio (GaAs)", category: "Semiconductores"},
+    {name: "Nitruro de Galio (GaN)", category: "Semiconductores"},
+    {name: "Teluro de Cadmio (CdTe)", category: "Semiconductores"},
+    {name: "Fosfuro de Indio (InP)", category: "Semiconductores"},
+    {name: "Óxido de Zinc (ZnO)", category: "Semiconductores"},
+    {name: "Óxido de Estaño (SnO₂)", category: "Semiconductores"},
+    {name: "ITO (Óxido Indio-Estaño)", category: "Semiconductores"},
+    {name: "Bronce", category: "Metales"},
+    {name: "Carburo de Tungsteno (WC)", category: "Cerámicos"}
 ];
 
-// ===== DATOS DE MATERIALES PARA COMPARADOR (35+ MATERIALES) =====
+// ===== MATERIALES PARA COMPARADOR (25+ MATERIALES) =====
 const materialsComparator = [
-    { name: "Acero Dulce", properties: { "Densidad (g/cm³)": 7.85, "Módulo Young (GPa)": 210, "Resistencia Tensil (MPa)": 250, "Elongación (%)": 25, "Costo (USD/kg)": 0.5, "Conductividad Térmica (W/m·K)": 50 } },
-    { name: "Aluminio", properties: { "Densidad (g/cm³)": 2.70, "Módulo Young (GPa)": 70, "Resistencia Tensil (MPa)": 90, "Elongación (%)": 40, "Costo (USD/kg)": 2.0, "Conductividad Térmica (W/m·K)": 237 } },
-    { name: "Titanio", properties: { "Densidad (g/cm³)": 4.51, "Módulo Young (GPa)": 103, "Resistencia Tensil (MPa)": 1160, "Elongación (%)": 10, "Costo (USD/kg)": 15.0, "Conductividad Térmica (W/m·K)": 22 } },
-    { name: "Polietileno", properties: { "Densidad (g/cm³)": 0.95, "Módulo Young (GPa)": 0.8, "Resistencia Tensil (MPa)": 20, "Elongación (%)": 500, "Costo (USD/kg)": 1.5, "Conductividad Térmica (W/m·K)": 0.5 } },
-    { name: "Poliestireno", properties: { "Densidad (g/cm³)": 1.05, "Módulo Young (GPa)": 3.0, "Resistencia Tensil (MPa)": 50, "Elongación (%)": 2, "Costo (USD/kg)": 1.2, "Conductividad Térmica (W/m·K)": 0.1 } },
-    { name: "Nylon 6", properties: { "Densidad (g/cm³)": 1.14, "Módulo Young (GPa)": 3.0, "Resistencia Tensil (MPa)": 80, "Elongación (%)": 300, "Costo (USD/kg)": 2.5, "Conductividad Térmica (W/m·K)": 0.25 } },
-    { name: "Alúmina (Al₂O₃)", properties: { "Densidad (g/cm³)": 3.97, "Módulo Young (GPa)": 380, "Resistencia Tensil (MPa)": 400, "Elongación (%)": 0, "Costo (USD/kg)": 5.0, "Conductividad Térmica (W/m·K)": 30 } },
-    { name: "Zirconia (ZrO₂)", properties: { "Densidad (g/cm³)": 6.10, "Módulo Young (GPa)": 200, "Resistencia Tensil (MPa)": 1200, "Elongación (%)": 0, "Costo (USD/kg)": 20.0, "Conductividad Térmica (W/m·K)": 2.5 } },
-    { name: "Vidrio", properties: { "Densidad (g/cm³)": 2.50, "Módulo Young (GPa)": 70, "Resistencia Tensil (MPa)": 50, "Elongación (%)": 0, "Costo (USD/kg)": 0.3, "Conductividad Térmica (W/m·K)": 1.0 } },
-    { name: "Fibra de Carbono/Epoxi", properties: { "Densidad (g/cm³)": 1.60, "Módulo Young (GPa)": 230, "Resistencia Tensil (MPa)": 1500, "Elongación (%)": 1, "Costo (USD/kg)": 25.0, "Conductividad Térmica (W/m·K)": 5.0 } },
-    { name: "Fibra de Vidrio/Poliéster", properties: { "Densidad (g/cm³)": 1.85, "Módulo Young (GPa)": 40, "Resistencia Tensil (MPa)": 450, "Elongación (%)": 3, "Costo (USD/kg)": 3.0, "Conductividad Térmica (W/m·K)": 0.3 } },
-    { name: "Kevlar/Epoxi", properties: { "Densidad (g/cm³)": 1.45, "Módulo Young (GPa)": 130, "Resistencia Tensil (MPa)": 1400, "Elongación (%)": 2, "Costo (USD/kg)": 30.0, "Conductividad Térmica (W/m·K)": 0.5 } },
-    { name: "Cobre", properties: { "Densidad (g/cm³)": 8.96, "Módulo Young (GPa)": 130, "Resistencia Tensil (MPa)": 220, "Elongación (%)": 45, "Costo (USD/kg)": 8.0, "Conductividad Térmica (W/m·K)": 401 } },
-    { name: "Magnesio", properties: { "Densidad (g/cm³)": 1.81, "Módulo Young (GPa)": 45, "Resistencia Tensil (MPa)": 170, "Elongación (%)": 3, "Costo (USD/kg)": 3.0, "Conductividad Térmica (W/m·K)": 156 } },
-    { name: "Níquel", properties: { "Densidad (g/cm³)": 8.90, "Módulo Young (GPa)": 200, "Resistencia Tensil (MPa)": 460, "Elongación (%)": 30, "Costo (USD/kg)": 10.0, "Conductividad Térmica (W/m·K)": 91 } },
-    { name: "Acero Inoxidable 316", properties: { "Densidad (g/cm³)": 8.00, "Módulo Young (GPa)": 193, "Resistencia Tensil (MPa)": 515, "Elongación (%)": 30, "Costo (USD/kg)": 3.5, "Conductividad Térmica (W/m·K)": 16 } },
-    { name: "Carburo de Silicio", properties: { "Densidad (g/cm³)": 3.21, "Módulo Young (GPa)": 410, "Resistencia Tensil (MPa)": 550, "Elongación (%)": 0, "Costo (USD/kg)": 10.0, "Conductividad Térmica (W/m·K)": 120 } },
-    { name: "Nitruro de Silicio", properties: { "Densidad (g/cm³)": 3.44, "Módulo Young (GPa)": 310, "Resistencia Tensil (MPa)": 1000, "Elongación (%)": 0, "Costo (USD/kg)": 15.0, "Conductividad Térmica (W/m·K)": 30 } },
-    { name: "Policarbonato", properties: { "Densidad (g/cm³)": 1.20, "Módulo Young (GPa)": 2.3, "Resistencia Tensil (MPa)": 65, "Elongación (%)": 100, "Costo (USD/kg)": 3.0, "Conductividad Térmica (W/m·K)": 0.2 } },
-    { name: "Acrílico", properties: { "Densidad (g/cm³)": 1.19, "Módulo Young (GPa)": 3.2, "Resistencia Tensil (MPa)": 72, "Elongación (%)": 5, "Costo (USD/kg)": 2.0, "Conductividad Térmica (W/m·K)": 0.2 } },
-    { name: "PVC", properties: { "Densidad (g/cm³)": 1.38, "Módulo Young (GPa)": 2.7, "Resistencia Tensil (MPa)": 50, "Elongación (%)": 40, "Costo (USD/kg)": 1.0, "Conductividad Térmica (W/m·K)": 0.16 } },
-    { name: "Silicio", properties: { "Densidad (g/cm³)": 2.33, "Módulo Young (GPa)": 130, "Resistencia Tensil (MPa)": 100, "Elongación (%)": 0, "Costo (USD/kg)": 5.0, "Conductividad Térmica (W/m·K)": 150 } },
-    { name: "Germanio", properties: { "Densidad (g/cm³)": 5.32, "Módulo Young (GPa)": 103, "Resistencia Tensil (MPa)": 80, "Elongación (%)": 0, "Costo (USD/kg)": 50.0, "Conductividad Térmica (W/m·K)": 60 } },
-    { name: "GaAs", properties: { "Densidad (g/cm³)": 5.32, "Módulo Young (GPa)": 85, "Resistencia Tensil (MPa)": 90, "Elongación (%)": 0, "Costo (USD/kg)": 100.0, "Conductividad Térmica (W/m·K)": 55 } },
-    { name: "Tungsteno", properties: { "Densidad (g/cm³)": 19.25, "Módulo Young (GPa)": 411, "Resistencia Tensil (MPa)": 1510, "Elongación (%)": 0, "Costo (USD/kg)": 20.0, "Conductividad Térmica (W/m·K)": 174 } },
-    { name: "Molibdeno", properties: { "Densidad (g/cm³)": 10.22, "Módulo Young (GPa)": 329, "Resistencia Tensil (MPa)": 655, "Elongación (%)": 0, "Costo (USD/kg)": 12.0, "Conductividad Térmica (W/m·K)": 138 } },
-    { name: "Inconel 718", properties: { "Densidad (g/cm³)": 8.19, "Módulo Young (GPa)": 200, "Resistencia Tensil (MPa)": 1380, "Elongación (%)": 12, "Costo (USD/kg)": 50.0, "Conductividad Térmica (W/m·K)": 11.4 } },
-    { name: "Titanio Grado 5", properties: { "Densidad (g/cm³)": 4.43, "Módulo Young (GPa)": 103, "Resistencia Tensil (MPa)": 1160, "Elongación (%)": 10, "Costo (USD/kg)": 18.0, "Conductividad Térmica (W/m·K)": 7.4 } },
-    { name: "PET", properties: { "Densidad (g/cm³)": 1.38, "Módulo Young (GPa)": 2.7, "Resistencia Tensil (MPa)": 55, "Elongación (%)": 50, "Costo (USD/kg)": 1.8, "Conductividad Térmica (W/m·K)": 0.24 } },
-    { name: "PTFE (Teflón)", properties: { "Densidad (g/cm³)": 2.15, "Módulo Young (GPa)": 0.5, "Resistencia Tensil (MPa)": 20, "Elongación (%)": 300, "Costo (USD/kg)": 20.0, "Conductividad Térmica (W/m·K)": 0.25 } },
-    { name: "Magnesia (MgO)", properties: { "Densidad (g/cm³)": 3.58, "Módulo Young (GPa)": 250, "Resistencia Tensil (MPa)": 200, "Elongación (%)": 0, "Costo (USD/kg)": 3.0, "Conductividad Térmica (W/m·K)": 40 } },
-    { name: "Carbono/Carbono", properties: { "Densidad (g/cm³)": 1.60, "Módulo Young (GPa)": 200, "Resistencia Tensil (MPa)": 400, "Elongación (%)": 0, "Costo (USD/kg)": 50.0, "Conductividad Térmica (W/m·K)": 100 } },
-    { name: "Hormigón", properties: { "Densidad (g/cm³)": 2.40, "Módulo Young (GPa)": 30, "Resistencia Tensil (MPa)": 30, "Elongación (%)": 0, "Costo (USD/kg)": 0.1, "Conductividad Térmica (W/m·K)": 1.4 } },
-    { name: "Madera (Roble)", properties: { "Densidad (g/cm³)": 0.75, "Módulo Young (GPa)": 11, "Resistencia Tensil (MPa)": 60, "Elongación (%)": 5, "Costo (USD/kg)": 0.5, "Conductividad Térmica (W/m·K)": 0.17 } },
-    { name: "Plomo", properties: { "Densidad (g/cm³)": 11.34, "Módulo Young (GPa)": 16, "Resistencia Tensil (MPa)": 17, "Elongación (%)": 50, "Costo (USD/kg)": 2.0, "Conductividad Térmica (W/m·K)": 35 } }
+    {name: "Acero", E: 200, σ: 400, ρ: 7850, κ: 50, α: 12, Tm: 1500},
+    {name: "Aluminio", E: 70, σ: 300, ρ: 2700, κ: 237, α: 23, Tm: 933},
+    {name: "Cobre", E: 110, σ: 220, ρ: 8960, κ: 385, α: 17, Tm: 1358},
+    {name: "Titanio", E: 103, σ: 880, ρ: 4500, κ: 22, α: 8.6, Tm: 1941},
+    {name: "Polietileno (PE)", E: 1, σ: 30, ρ: 920, κ: 0.5, α: 80, Tm: 408},
+    {name: "PVC", E: 3, σ: 50, ρ: 1380, κ: 0.16, α: 70, Tm: 523},
+    {name: "Poliestireno (PS)", E: 3.5, σ: 60, ρ: 1050, κ: 0.13, α: 70, Tm: 513},
+    {name: "Nylon", E: 5, σ: 80, ρ: 1140, κ: 0.25, α: 80, Tm: 533},
+    {name: "Alúmina (Al₂O₃)", E: 380, σ: 300, ρ: 3960, κ: 30, α: 8, Tm: 2327},
+    {name: "Zirconia (ZrO₂)", E: 200, σ: 1200, ρ: 6000, κ: 2, α: 10, Tm: 2973},
+    {name: "Carburo de Silicio", E: 410, σ: 3500, ρ: 3210, κ: 120, α: 4.3, Tm: 2700},
+    {name: "Fibra de Carbono", E: 230, σ: 3500, ρ: 1600, κ: 150, α: -0.5, Tm: 3650},
+    {name: "Fibra de Vidrio", E: 85, σ: 2400, ρ: 2600, κ: 1.4, α: 5, Tm: 1973},
+    {name: "Silicio (Si)", E: 130, σ: 100, ρ: 2330, κ: 150, α: 2.6, Tm: 1687},
+    {name: "Germanio (Ge)", E: 103, σ: 80, ρ: 5323, κ: 60, α: 5.75, Tm: 1211},
+    {name: "GaAs", E: 85, σ: 90, ρ: 5316, κ: 55, α: 5.73, Tm: 1511},
+    {name: "Vidrio", E: 70, σ: 100, ρ: 2500, κ: 1, α: 9, Tm: 1973},
+    {name: "Magnesio", E: 45, σ: 280, ρ: 1738, κ: 156, α: 26, Tm: 923},
+    {name: "Níquel", E: 200, σ: 400, ρ: 8908, κ: 91, α: 13, Tm: 1728},
+    {name: "Teflón (PTFE)", E: 0.5, σ: 25, ρ: 2150, κ: 0.25, α: 100, Tm: 600},
+    {name: "Policarbonato", E: 2.3, σ: 65, ρ: 1200, κ: 0.2, α: 65, Tm: 563},
+    {name: "Aramida (Kevlar)", E: 130, σ: 3600, ρ: 1450, κ: 0.04, α: -2, Tm: 560},
+    {name: "Nitruro de Silicio", E: 310, σ: 1000, ρ: 3200, κ: 30, α: 3, Tm: 2173},
+    {name: "Óxido de Zinc (ZnO)", E: 140, σ: 200, ρ: 5610, κ: 25, α: 6, Tm: 1975},
+    {name: "Latón (Cu-Zn)", E: 100, σ: 350, ρ: 8500, κ: 120, α: 20, Tm: 1200}
 ];
 
-// ===== DATOS PARA SIMULADOR PSPD (15 EJEMPLOS) =====
+// ===== EJEMPLOS SIMULADOR PSPD (14 EJEMPLOS) =====
 const pspdExamples = [
-    {
-        name: "Acero Templado",
-        proceso: "Calentamiento a 900°C + Enfriamiento rápido en agua",
-        estructura: "Martensita: estructura tetragonal distorsionada con alta densidad de dislocaciones",
-        propiedad: "Dureza muy alta (58-62 HRC), resistencia elevada, baja ductilidad",
-        desempeño: "Excelente para herramientas de corte, cuchillas, muelles de precisión"
-    },
-    {
-        name: "Polímero Cristalino",
-        proceso: "Moldeo por inyección + Enfriamiento controlado",
-        estructura: "Semicristalinidad 50-80%: zonas cristalinas ordenadas + zonas amorfas",
-        propiedad: "Rigidez moderada, resistencia química, baja densidad, transparencia",
-        desempeño: "Ideal para envases, tuberías, componentes automotrices, lentes"
-    },
-    {
-        name: "Compuesto Unidireccional",
-        proceso: "Alineación de fibras + Impregnación con matriz epoxi",
-        estructura: "Fibras paralelas en matriz polimérica, interfase matriz-fibra crítica",
-        propiedad: "Resistencia/peso muy alta en dirección de fibras, anisotropía pronunciada",
-        desempeño: "Alas de aviones, palas de turbinas eólicas, estructuras aeroespaciales"
-    },
-    {
-        name: "Zirconia Estabilizada",
-        proceso: "Dopaje con óxido de itrio (Y₂O₃) + Sinterización a 1600°C",
-        estructura: "Fase cúbica metaestable a temperatura ambiente, baja expansión térmica",
-        propiedad: "Resistencia al choque térmico, tenacidad mejorada, refractariedad",
-        desempeño: "Implantes dentales, revestimientos de turbinas, crucibles refractarios"
-    },
-    {
-        name: "Semiconductor Dopado",
-        proceso: "Dopaje con fósforo (tipo N) o boro (tipo P) + Difusión térmica",
-        estructura: "Unión P-N con región de agotamiento, portadores mayoritarios controlados",
-        propiedad: "Conductividad controlada, rectificación de corriente, emisión de luz (LED)",
-        desempeño: "Diodos, transistores, circuitos integrados, celdas solares, LEDs"
-    },
-    {
-        name: "Aleación de Aluminio",
-        proceso: "Adición de Cu, Mg, Si + Tratamiento térmico (envejecimiento)",
-        estructura: "Precipitados duros (CuAl₂) dispersos en matriz Al",
-        propiedad: "Resistencia aumenta 3x, mantiene bajo peso, buena ductilidad",
-        desempeño: "Fuselajes de aviones, estructuras aeroespaciales, componentes de precisión"
-    },
-    {
-        name: "Acero Inoxidable",
-        proceso: "Adición de Cr (>12%) + Cr₂O₃ pasivante en superficie",
-        estructura: "Capa pasiva de óxido que protege del ataque químico",
-        propiedad: "Excelente resistencia a corrosión, resistencia moderada, biocompatible",
-        desempeño: "Implantes médicos, tuberías químicas, utensilios de cocina, equipos hospitalarios"
-    },
-    {
-        name: "Compuesto Laminado",
-        proceso: "Capas alternas [0°/90°/±45°] de fibra de carbono + epoxi",
-        estructura: "Anisotropía controlada: cada capa optimizada para dirección de carga",
-        propiedad: "Resistencia/peso optimizada, rigidez en múltiples direcciones",
-        desempeño: "Carrocerías de autos deportivos, marcos de bicicletas, estructuras de drones"
-    },
-    {
-        name: "Cerámica Refractaria",
-        proceso: "Sinterización de alúmina (Al₂O₃) a 1800°C",
-        estructura: "Granos de Al₂O₃ densamente empacados, baja porosidad",
-        propiedad: "Punto de fusión 2072°C, resistencia química, baja conductividad térmica",
-        desempeño: "Revestimiento de hornos de acería, crisoles, tubos de combustión"
-    },
-    {
-        name: "Polímero Termoestable",
-        proceso: "Entrecruzamiento químico (curado) con agente de enlace",
-        estructura: "Red 3D de enlaces covalentes, sin fusión posible",
-        propiedad: "Rigidez extrema, resistencia térmica hasta 300°C, no reciclable",
-        desempeño: "Circuitos impresos, aislamiento eléctrico, estructuras de alta temperatura"
-    },
-    {
-        name: "Titanio Puro",
-        proceso: "Reducción de TiO₂ + Purificación (esponja de titanio)",
-        estructura: "Estructura HCP a temperatura ambiente, alotrópico",
-        propiedad: "Excelente relación resistencia/peso, biocompatible, resistencia a corrosión",
-        desempeño: "Implantes óseos, turbinas de motores, equipos químicos, estructuras aeroespaciales"
-    },
-    {
-        name: "Vidrio Templado",
-        proceso: "Calentamiento a 700°C + Enfriamiento rápido con aire",
-        estructura: "Tensiones residuales compresivas en superficie, amorfo",
-        propiedad: "Resistencia a impacto 5x mayor, se quiebra en pequeños fragmentos",
-        desempeño: "Ventanas de seguridad, pantallas de dispositivos, puertas de edificios"
-    },
-    {
-        name: "Compuesto Metal-Cerámica",
-        proceso: "Infiltración de metal fundido en matriz cerámica",
-        estructura: "Partículas cerámicas en matriz metálica, interfase fuerte",
-        propiedad: "Rigidez de cerámica + ductilidad de metal, resistencia térmica",
-        desempeño: "Componentes de motores, discos de freno, herramientas de corte"
-    },
-    {
-        name: "Polímero Elastómero",
-        proceso: "Vulcanización: entrecruzamiento con azufre",
-        estructura: "Red 3D flexible con entrecruzamiento moderado",
-        propiedad: "Elasticidad extrema, recuperación rápida, resistencia a desgarre",
-        desempeño: "Neumáticos, sellos, amortiguadores, bandas elásticas"
-    },
-    {
-        name: "Silicio Dopado (Semiconductor)",
-        proceso: "Dopaje tipo N con Fósforo (5 átomos/cm³) + Difusión térmica",
-        estructura: "Donantes crean niveles de energía cerca de banda de conducción",
-        propiedad: "Conductividad controlada, portadores = electrones, temperatura operación 150°C",
-        desempeño: "Chips de computadora, sensores, diodos, transistores, celdas solares"
-    }
+    {name: "Acero al Carbono (Tratamiento Térmico)", process: "Temple y revenido", structure: "Ferrita + Cementita (Fe₃C) con tamaño de grano controlado", properties: "Dureza 50-60 HRC, Resistencia 1000-1500 MPa", performance: "Herramientas de corte, matrices, componentes estructurales"},
+    {name: "Polietileno (Cristalinidad)", process: "Enfriamiento controlado durante moldeo", structure: "Zonas cristalinas + amorfas. Mayor cristalinidad = mayor rigidez", properties: "Rigidez E=0.5-2 GPa, Ductilidad variable", performance: "Películas, tuberías, contenedores"},
+    {name: "Alúmina (Sinterización)", process: "Compactación de polvo + sinterización a 1600°C", structure: "Granos de Al₂O₃ unidos por difusión, porosidad controlada", properties: "Dureza 9 Mohs, Resistencia 300-500 MPa", performance: "Refractarios, herramientas de corte, aislantes"},
+    {name: "Fibra de Carbono (Orientación)", process: "Alineación de fibras en matriz epóxica", structure: "Fibras paralelas en dirección de carga", properties: "Resistencia 3500 MPa (paralelo), 50 MPa (perpendicular)", performance: "Alas de avión, palas de turbina, estructuras ligeras"},
+    {name: "Silicio Dopado (Dopaje tipo N)", process: "Dopaje con fósforo, crecimiento epitaxial", structure: "Red de Si con átomos de P sustitucionales, electrones libres", properties: "Conductividad σ~10^-3 S/m, Brecha Eg=1.1 eV", performance: "Diodos, transistores, celdas solares"},
+    {name: "Titanio (Forja en Caliente)", process: "Deformación plástica a 900-1000°C", structure: "Grano fino, dislocaciones controladas", properties: "Resistencia 880 MPa, Ductilidad 15-20%", performance: "Componentes aeroespaciales, implantes médicos"},
+    {name: "Nylon 6 (Inyección)", process: "Moldeo por inyección a 250-300°C", structure: "Cadenas parcialmente cristalinas, orientación en flujo", properties: "Rigidez E=5-10 GPa, Resistencia 80-120 MPa", performance: "Engranajes, rodamientos, componentes automotrices"},
+    {name: "Vidrio (Temple Térmico)", process: "Calentamiento a 600°C + enfriamiento rápido", structure: "Red amorfa de SiO₂ con tensiones compresivas superficiales", properties: "Dureza 5.5 Mohs, Resistencia a compresión 1000 MPa", performance: "Ventanas de seguridad, pantallas, botellas"},
+    {name: "Compuesto de Matriz Epóxica (Orientación)", process: "Laminación con fibras a 0°, 90°, 45°", structure: "Capas cruzadas, distribución de carga multidireccional", properties: "Resistencia 1000-2000 MPa, Rigidez E=50-150 GPa", performance: "Fuselajes de aviones, carrocerías de autos, estructuras"},
+    {name: "Germanio (Purificación y Dopaje)", process: "Crecimiento Czochralski + dopaje tipo P", structure: "Red de Ge con átomos de Ga, huecos como portadores", properties: "Conductividad σ~10^-2 S/m, Brecha Eg=0.67 eV", performance: "Detectores IR, transistores de alta frecuencia"},
+    {name: "Cobre (Recocido y Endurecimiento)", process: "Deformación en frío + recocido a 400°C", structure: "Grano fino, dislocaciones aniquiladas", properties: "Conductividad σ~5.96×10^7 S/m, Ductilidad 40-50%", performance: "Cables eléctricos, tuberías, componentes electrónicos"},
+    {name: "PVC (Plastificación)", process: "Adición de plastificantes (DOP) + moldeo", structure: "Cadenas con plastificantes intercalados, reduce Tg", properties: "Flexibilidad controlada, Resistencia 50-80 MPa", performance: "Tuberías, recubrimientos, películas flexibles"},
+    {name: "Zirconia (Estabilización con Itria)", process: "Adición de Y₂O₃ + sinterización", structure: "Fase cúbica estabilizada a temperatura ambiente", properties: "Tenacidad 10-15 MPa√m, Resistencia 1200 MPa", performance: "Implantes dentales, cojinetes, componentes de turbinas"},
+    {name: "Arseniuro de Galio (Crecimiento Epitaxial)", process: "Crecimiento epitaxial por MOCVD", structure: "Red de GaAs con dopaje tipo N o P, heterouniones", properties: "Brecha Eg=1.42 eV, Movilidad de electrones alta", performance: "Diodos láser, LEDs de alta eficiencia, celdas solares"}
 ];
 
-// ===== FUNCIONES PRINCIPALES =====
-function openTab(tabName) {
-    const tabContents = document.querySelectorAll('.tab-content');
-    tabContents.forEach(tab => tab.classList.add('hidden'));
-    document.getElementById(tabName).classList.remove('hidden');
-    
-    if (tabName === 'quiz') initQuiz();
-    if (tabName === 'flashcards') initFlashcards();
-    if (tabName === 'classifier') initClassifier();
-    if (tabName === 'comparator') initComparator();
-    if (tabName === 'pspd') initPSPD();
-}
+// ===== INICIALIZACIÓN =====
+document.addEventListener("DOMContentLoaded", function() {
+    initializeQuiz();
+    initializeFlashcards();
+    initializeClassifier();
+    initializeComparator();
+    initializeSimulator();
+    setupTabButtons();
+});
 
-// ===== QUIZ =====
-function initQuiz() {
+// ===== FUNCIONES DEL QUIZ =====
+function initializeQuiz() {
     currentQuestionIndex = 0;
     quizScore = 0;
     selectedAnswers = [];
-    loadQuestion();
+    displayQuestion();
 }
 
-function loadQuestion() {
-    const quizContent = document.getElementById('quiz-content');
-    const quizResult = document.getElementById('quiz-result');
-    
+function displayQuestion() {
     if (currentQuestionIndex >= quizQuestions.length) {
-        quizContent.classList.add('hidden');
-        quizResult.classList.remove('hidden');
-        document.getElementById('final-score').textContent = quizScore;
-        document.getElementById('total-questions').textContent = quizQuestions.length;
-        document.getElementById('percentage').textContent = Math.round((quizScore / quizQuestions.length) * 100);
+        showResults();
         return;
     }
-    
-    quizContent.classList.remove('hidden');
-    quizResult.classList.add('hidden');
-    
+
     const question = quizQuestions[currentQuestionIndex];
-    const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+    document.getElementById("questionText").textContent = `${currentQuestionIndex + 1}. ${question.question}`;
     
-    document.getElementById('quiz-progress').style.width = progress + '%';
-    document.getElementById('quiz-current').textContent = currentQuestionIndex + 1;
-    document.getElementById('quiz-total').textContent = quizQuestions.length;
-    document.getElementById('question-text').textContent = question.question;
-    
-    const optionsContainer = document.getElementById('options-container');
-    optionsContainer.innerHTML = '';
+    const optionsContainer = document.getElementById("optionsContainer");
+    optionsContainer.innerHTML = "";
     
     question.options.forEach((option, index) => {
-        const button = document.createElement('button');
-        button.className = 'option-btn';
-        button.textContent = option;
-        button.onclick = () => selectAnswer(option, question.correct, question.explanation);
-        optionsContainer.appendChild(button);
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = option;
+        btn.onclick = () => selectAnswer(index, option);
+        optionsContainer.appendChild(btn);
     });
+
+    updateProgress();
 }
 
-function selectAnswer(selected, correct, explanation) {
-    if (selected === correct) {
+function selectAnswer(index, option) {
+    const question = quizQuestions[currentQuestionIndex];
+    const isCorrect = index === question.correct;
+    
+    selectedAnswers[currentQuestionIndex] = {selected: option, correct: isCorrect};
+    
+    if (isCorrect) {
         quizScore++;
     }
-    
-    selectedAnswers.push({ selected, correct });
-    
-    const explanationDiv = document.getElementById('explanation');
-    explanationDiv.innerHTML = `<strong>Explicación:</strong> ${explanation}`;
-    explanationDiv.classList.remove('hidden');
-    
-    document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-    
-    setTimeout(() => {
-        currentQuestionIndex++;
-        loadQuestion();
-        document.getElementById('explanation').classList.add('hidden');
-    }, 3000);
+
+    showFeedback(isCorrect, question.explanation);
+    disableOptions();
+}
+
+function showFeedback(isCorrect, explanation) {
+    const feedbackContainer = document.getElementById("feedbackContainer");
+    feedbackContainer.className = "feedback-container show " + (isCorrect ? "correct" : "incorrect");
+    feedbackContainer.innerHTML = `<strong>${isCorrect ? "✓ Correcto" : "✗ Incorrecto"}</strong><p>${explanation}</p>`;
+}
+
+function disableOptions() {
+    document.querySelectorAll(".option-btn").forEach(btn => btn.disabled = true);
+}
+
+function nextQuestion() {
+    currentQuestionIndex++;
+    displayQuestion();
+}
+
+function previousQuestion() {
+    if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        displayQuestion();
+    }
+}
+
+function updateProgress() {
+    const percentage = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+    document.getElementById("progressFill").style.width = percentage + "%";
+    document.getElementById("progressText").textContent = `Pregunta ${currentQuestionIndex + 1} de ${quizQuestions.length}`;
+}
+
+function showResults() {
+    document.getElementById("quizContent").style.display = "none";
+    document.getElementById("quizResults").style.display = "block";
+    const percentage = (quizScore / quizQuestions.length) * 100;
+    document.getElementById("finalScore").textContent = `Puntuación: ${quizScore}/${quizQuestions.length}`;
+    document.getElementById("scorePercentage").textContent = `${percentage.toFixed(1)}%`;
 }
 
 function restartQuiz() {
-    initQuiz();
+    document.getElementById("quizContent").style.display = "block";
+    document.getElementById("quizResults").style.display = "none";
+    initializeQuiz();
 }
 
-// ===== FLASHCARDS =====
-function initFlashcards() {
+// ===== FUNCIONES DE FLASHCARDS =====
+function initializeFlashcards() {
+    flashcards = [...flashcardsData];
     currentFlashcardIndex = 0;
     displayFlashcard();
 }
 
 function displayFlashcard() {
+    if (flashcards.length === 0) return;
     const card = flashcards[currentFlashcardIndex];
-    document.getElementById('flashcard-front').textContent = card.front;
-    document.getElementById('flashcard-back').textContent = card.back;
-    document.getElementById('flashcard-back').style.display = 'none';
-    document.getElementById('flashcard-counter').textContent = `${currentFlashcardIndex + 1} / ${flashcards.length}`;
-    document.getElementById('flashcard').style.transform = 'rotateY(0deg)';
+    document.getElementById("cardFront").textContent = card.front;
+    document.getElementById("cardBack").textContent = card.back;
+    document.getElementById("cardCounter").textContent = `Tarjeta ${currentFlashcardIndex + 1} de ${flashcards.length}`;
+    document.getElementById("flashcard").classList.remove("flipped");
 }
 
 function flipCard() {
-    const back = document.getElementById('flashcard-back');
-    const card = document.getElementById('flashcard');
-    if (back.style.display === 'none') {
-        back.style.display = 'block';
-        card.style.transform = 'rotateY(180deg)';
-    } else {
-        back.style.display = 'none';
-        card.style.transform = 'rotateY(0deg)';
-    }
+    document.getElementById("flashcard").classList.toggle("flipped");
 }
 
-function nextFlashcard() {
-    if (currentFlashcardIndex < flashcards.length - 1) {
-        currentFlashcardIndex++;
-        displayFlashcard();
-    }
+function nextCard() {
+    currentFlashcardIndex = (currentFlashcardIndex + 1) % flashcards.length;
+    displayFlashcard();
 }
 
-function prevFlashcard() {
-    if (currentFlashcardIndex > 0) {
-        currentFlashcardIndex--;
-        displayFlashcard();
-    }
+function previousCard() {
+    currentFlashcardIndex = (currentFlashcardIndex - 1 + flashcards.length) % flashcards.length;
+    displayFlashcard();
 }
 
-// ===== CLASIFICADOR =====
-function initClassifier() {
-    const container = document.getElementById('classifier-container');
-    container.innerHTML = '';
-    
-    const materialsShuffled = [...materialsData].sort(() => Math.random() - 0.5);
-    
-    materialsShuffled.forEach(material => {
-        const div = document.createElement('div');
-        div.className = 'material-item';
+function shuffleCards() {
+    for (let i = flashcards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [flashcards[i], flashcards[j]] = [flashcards[j], flashcards[i]];
+    }
+    currentFlashcardIndex = 0;
+    displayFlashcard();
+}
+
+// ===== FUNCIONES DEL CLASIFICADOR =====
+function initializeClassifier() {
+    const container = document.getElementById("materialsContainer");
+    container.innerHTML = "";
+    materialsClassifier.forEach(material => {
+        const div = document.createElement("div");
+        div.className = "material-item";
         div.draggable = true;
         div.textContent = material.name;
         div.dataset.category = material.category;
-        div.ondragstart = (e) => {
-            draggedElement = e.target;
-            e.target.style.opacity = '0.5';
-        };
-        div.ondragend = (e) => {
-            e.target.style.opacity = '1';
-        };
+        div.addEventListener("dragstart", dragStart);
+        div.addEventListener("dragend", dragEnd);
         container.appendChild(div);
     });
-    
-    const categories = ['Metales', 'Polímeros', 'Cerámicos', 'Compuestos'];
-    const dropsContainer = document.getElementById('drops-container');
-    dropsContainer.innerHTML = '';
-    
-    categories.forEach(cat => {
-        const drop = document.createElement('div');
-        drop.className = 'drop-zone';
-        drop.dataset.category = cat;
-        drop.innerHTML = `<h3>${cat}</h3>`;
-        drop.ondragover = (e) => e.preventDefault();
-        drop.ondrop = (e) => {
-            e.preventDefault();
-            if (draggedElement && draggedElement.dataset.category === cat) {
-                drop.appendChild(draggedElement);
-                draggedElement.draggable = false;
-                draggedElement.style.cursor = 'default';
-            }
-        };
-        dropsContainer.appendChild(drop);
+
+    document.querySelectorAll(".drop-zone").forEach(zone => {
+        zone.addEventListener("dragover", dragOver);
+        zone.addEventListener("drop", drop);
+        zone.addEventListener("dragleave", dragLeave);
     });
 }
 
-// ===== COMPARADOR =====
-function initComparator() {
-    const select = document.getElementById('material-select');
-    select.innerHTML = '<option value="">Selecciona un material...</option>';
-    materialsComparator.forEach((mat, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = mat.name;
-        select.appendChild(option);
-    });
+function dragStart(e) {
+    draggedElement = e.target;
+    e.target.classList.add("dragging");
 }
 
-function compareMaterials() {
-    const select = document.getElementById('material-select');
-    const index = select.value;
-    if (index === '') return;
-    
-    const material = materialsComparator[index];
-    const table = document.getElementById('comparison-table');
-    table.innerHTML = '<tr><th>Propiedad</th><th>Valor</th></tr>';
-    
-    for (const [prop, value] of Object.entries(material.properties)) {
-        const row = table.insertRow();
-        row.insertCell(0).textContent = prop;
-        row.insertCell(1).textContent = value;
+function dragEnd(e) {
+    e.target.classList.remove("dragging");
+}
+
+function dragOver(e) {
+    e.preventDefault();
+    e.target.closest(".drop-zone").classList.add("drag-over");
+}
+
+function dragLeave(e) {
+    e.target.closest(".drop-zone").classList.remove("drag-over");
+}
+
+function drop(e) {
+    e.preventDefault();
+    e.target.closest(".drop-zone").classList.remove("drag-over");
+    const zone = e.target.closest(".drop-zone");
+    if (draggedElement) {
+        zone.appendChild(draggedElement);
     }
 }
 
-// ===== SIMULADOR PSPD =====
-function initPSPD() {
-    const select = document.getElementById('pspd-select');
-    select.innerHTML = '';
-    pspdExamples.forEach((ex, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = ex.name;
+function resetClassifier() {
+    initializeClassifier();
+    document.getElementById("classifierResult").innerHTML = "";
+}
+
+function checkClassifier() {
+    let correct = 0;
+    document.querySelectorAll(".drop-zone").forEach(zone => {
+        const category = zone.closest(".category").dataset.category;
+        zone.querySelectorAll(".material-item").forEach(item => {
+            if (item.dataset.category === category) {
+                correct++;
+                item.style.backgroundColor = "#dcfce7";
+            } else {
+                item.style.backgroundColor = "#fee2e2";
+            }
+        });
+    });
+    const result = document.getElementById("classifierResult");
+    result.innerHTML = `<p style="color: green; font-weight: bold;">Correctos: ${correct}/${materialsClassifier.length}</p>`;
+}
+
+// ===== FUNCIONES DEL COMPARADOR =====
+function initializeComparator() {
+    const select1 = document.getElementById("material1Select");
+    const select2 = document.getElementById("material2Select");
+    
+    materialsComparator.forEach(material => {
+        const option1 = document.createElement("option");
+        option1.value = material.name;
+        option1.textContent = material.name;
+        select1.appendChild(option1);
+
+        const option2 = document.createElement("option");
+        option2.value = material.name;
+        option2.textContent = material.name;
+        select2.appendChild(option2);
+    });
+}
+
+function updateComparison() {
+    const mat1Name = document.getElementById("material1Select").value;
+    const mat2Name = document.getElementById("material2Select").value;
+
+    if (!mat1Name || !mat2Name) return;
+
+    const mat1 = materialsComparator.find(m => m.name === mat1Name);
+    const mat2 = materialsComparator.find(m => m.name === mat2Name);
+
+    const html = `
+        <table>
+            <tr><th>Propiedad</th><th>${mat1.name}</th><th>${mat2.name}</th></tr>
+            <tr><td>Módulo de Young (GPa)</td><td>${mat1.E}</td><td>${mat2.E}</td></tr>
+            <tr><td>Resistencia (MPa)</td><td>${mat1.σ}</td><td>${mat2.σ}</td></tr>
+            <tr><td>Densidad (kg/m³)</td><td>${mat1.ρ}</td><td>${mat2.ρ}</td></tr>
+            <tr><td>Conductividad Térmica (W/m·K)</td><td>${mat1.κ}</td><td>${mat2.κ}</td></tr>
+            <tr><td>Coef. Expansión (×10⁻⁶/K)</td><td>${mat1.α}</td><td>${mat2.α}</td></tr>
+            <tr><td>Punto de Fusión (K)</td><td>${mat1.Tm}</td><td>${mat2.Tm}</td></tr>
+        </table>
+    `;
+    document.getElementById("comparisonTable").innerHTML = html;
+}
+
+// ===== FUNCIONES DEL SIMULADOR =====
+function initializeSimulator() {
+    const select = document.getElementById("exampleSelect");
+    pspdExamples.forEach(example => {
+        const option = document.createElement("option");
+        option.value = example.name;
+        option.textContent = example.name;
         select.appendChild(option);
     });
 }
 
-function showPSPDExample() {
-    const select = document.getElementById('pspd-select');
-    const index = select.value;
-    if (index === '') return;
-    
-    const example = pspdExamples[index];
-    const details = document.getElementById('pspd-details');
-    details.innerHTML = `
-        <div class="pspd-card">
-            <h3>Proceso</h3>
-            <p>${example.proceso}</p>
-        </div>
-        <div class="pspd-card">
-            <h3>Estructura</h3>
-            <p>${example.estructura}</p>
-        </div>
-        <div class="pspd-card">
-            <h3>Propiedades</h3>
-            <p>${example.propiedad}</p>
-        </div>
-        <div class="pspd-card">
-            <h3>Desempeño</h3>
-            <p>${example.desempeño}</p>
+function updateSimulator() {
+    const selectedName = document.getElementById("exampleSelect").value;
+    if (!selectedName) return;
+
+    const example = pspdExamples.find(e => e.name === selectedName);
+    const html = `
+        <div class="pspd-diagram">
+            <div class="pspd-box">
+                <h4>PROCESO</h4>
+                <p>${example.process}</p>
+            </div>
+            <div class="pspd-box">
+                <h4>ESTRUCTURA</h4>
+                <p>${example.structure}</p>
+            </div>
+            <div class="pspd-box">
+                <h4>PROPIEDADES</h4>
+                <p>${example.properties}</p>
+            </div>
+            <div class="pspd-box">
+                <h4>DESEMPEÑO</h4>
+                <p>${example.performance}</p>
+            </div>
         </div>
     `;
+    document.getElementById("simulatorContent").innerHTML = html;
 }
 
-// Inicializar en carga
-document.addEventListener('DOMContentLoaded', () => {
-    openTab('quiz');
-});
+// ===== FUNCIONES DE NAVEGACIÓN =====
+function setupTabButtons() {
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            const tabName = this.dataset.tab;
+            switchTab(tabName);
+        });
+    });
+}
+
+function switchTab(tabName) {
+    document.querySelectorAll(".tab-content").forEach(tab => {
+        tab.classList.remove("active");
+    });
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    document.getElementById(tabName).classList.add("active");
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add("active");
+}
