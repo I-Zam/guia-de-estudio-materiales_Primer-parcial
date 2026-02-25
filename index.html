@@ -3,118 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIM Learning Platform - Primer Parcial</title>
+    <title>CIM Learning Platform - Primer Parcial Expandido</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
+        <!-- HEADER -->
         <header class="header">
             <div class="header-content">
-                <div class="logo-section">
-                    <h1>📚 CIM Learning Platform</h1>
-                    <p>Ciencia e Ingeniería de Materiales - Primer Parcial</p>
-                </div>
-                <div class="stats">
-                    <span class="badge">⚡ 70 Preguntas Interactivas</span>
-                </div>
+                <h1>📚 CIM Learning Platform</h1>
+                <p>Ciencia e Ingeniería de Materiales - Primer Parcial</p>
             </div>
+            <div class="badge">100 Preguntas + 70 Flashcards</div>
         </header>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <section class="hero">
-                <h2>Prepárate para tu Examen</h2>
-                <p>Utiliza estos 5 recursos didácticos interactivos para dominar los conceptos de Ciencia e Ingeniería de Materiales. Desde preguntas de opción múltiple hasta simuladores, tenemos todo lo que necesitas.</p>
+        <!-- NAVIGATION TABS -->
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="home">Inicio</button>
+            <button class="tab-btn" data-tab="quiz">Quiz (100 Q)</button>
+            <button class="tab-btn" data-tab="flashcards">Flashcards</button>
+            <button class="tab-btn" data-tab="classifier">Clasificador</button>
+            <button class="tab-btn" data-tab="comparator">Comparador</button>
+            <button class="tab-btn" data-tab="pspd">Simulador PSPD</button>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="content">
+            <!-- HOME TAB -->
+            <section id="home" class="tab-content active">
+                <div class="welcome-card">
+                    <h2>¡Bienvenido a tu Plataforma de Estudio!</h2>
+                    <p>Esta herramienta interactiva te ayudará a prepararte para el Primer Examen Parcial de Ciencia e Ingeniería de Materiales.</p>
+                    
+                    <div class="resources-grid">
+                        <div class="resource-card">
+                            <h3>📝 Quiz Interactivo</h3>
+                            <p>100 preguntas aleatorias de todos los temas (Metales, Polímeros, Cerámicos, Compuestos, Semiconductores)</p>
+                            <button onclick="switchTab('quiz')" class="btn-primary">Comenzar Quiz</button>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h3>🎴 Flashcards</h3>
+                            <p>70 tarjetas de memoria con conceptos clave. Perfecto para repaso rápido.</p>
+                            <button onclick="switchTab('flashcards')" class="btn-primary">Ver Flashcards</button>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h3>🏷️ Clasificador</h3>
+                            <p>Clasifica 25+ materiales en sus categorías correctas. Aprende identificando.</p>
+                            <button onclick="switchTab('classifier')" class="btn-primary">Jugar Clasificador</button>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h3>📊 Comparador</h3>
+                            <p>Compara propiedades de 25+ materiales. Entiende trade-offs de ingeniería.</p>
+                            <button onclick="switchTab('comparator')" class="btn-primary">Explorar Comparador</button>
+                        </div>
+                        
+                        <div class="resource-card">
+                            <h3>⚙️ Simulador PSPD</h3>
+                            <p>Visualiza la relación Proceso-Estructura-Propiedad-Desempeño con ejemplos reales.</p>
+                            <button onclick="switchTab('pspd')" class="btn-primary">Abrir Simulador</button>
+                        </div>
+                    </div>
+                </div>
             </section>
 
-            <!-- Resource Cards -->
-            <section class="resources-grid">
-                <div class="resource-card" data-resource="quiz">
-                    <div class="card-icon">🧠</div>
-                    <h3>Quiz Interactivo</h3>
-                    <p>Preguntas aleatorias con retroalimentación inmediata. Cubre todos los temas del examen.</p>
-                    <button class="btn btn-primary" onclick="switchResource('quiz')">Comenzar Quiz</button>
-                </div>
-
-                <div class="resource-card" data-resource="flashcards">
-                    <div class="card-icon">📇</div>
-                    <h3>Flashcards</h3>
-                    <p>Repasa conceptos clave rápidamente. Perfecto para memorizar definiciones y propiedades.</p>
-                    <button class="btn btn-primary" onclick="switchResource('flashcards')">Ver Flashcards</button>
-                </div>
-
-                <div class="resource-card" data-resource="classifier">
-                    <div class="card-icon">🎯</div>
-                    <h3>Clasificador de Materiales</h3>
-                    <p>Clasifica materiales por tipo. Aprende a distinguir entre metales, polímeros, cerámicos y compuestos.</p>
-                    <button class="btn btn-primary" onclick="switchResource('classifier')">Jugar</button>
-                </div>
-
-                <div class="resource-card" data-resource="comparator">
-                    <div class="card-icon">📊</div>
-                    <h3>Comparador de Propiedades</h3>
-                    <p>Compara propiedades de diferentes materiales. Entiende cómo la estructura define el desempeño.</p>
-                    <button class="btn btn-primary" onclick="switchResource('comparator')">Explorar</button>
-                </div>
-
-                <div class="resource-card" data-resource="pspd">
-                    <div class="card-icon">🔄</div>
-                    <h3>Simulador PSPD</h3>
-                    <p>Visualiza la relación Proceso-Estructura-Propiedad-Desempeño de forma interactiva.</p>
-                    <button class="btn btn-primary" onclick="switchResource('pspd')">Simular</button>
+            <!-- QUIZ TAB -->
+            <section id="quiz" class="tab-content">
+                <div class="quiz-container">
+                    <div class="quiz-header">
+                        <h2>Quiz Interactivo - 100 Preguntas</h2>
+                        <div class="quiz-stats">
+                            <span>Pregunta: <strong id="quiz-current">1</strong> / <strong id="quiz-total">100</strong></span>
+                            <span>Puntuación: <strong id="quiz-score">0</strong> / 100</span>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div id="quiz-progress" class="progress-fill"></div>
+                    </div>
+                    
+                    <div id="quiz-content" class="quiz-content">
+                        <!-- Contenido dinámico del quiz -->
+                    </div>
+                    
+                    <div id="quiz-result" class="quiz-result hidden">
+                        <h3>¡Quiz Completado!</h3>
+                        <p>Tu puntuación: <strong id="final-score">0</strong> / 100</p>
+                        <button onclick="restartQuiz()" class="btn-primary">Reiniciar Quiz</button>
+                    </div>
                 </div>
             </section>
 
-            <!-- Tab Navigation -->
-            <nav class="tabs">
-                <button class="tab-btn active" onclick="switchResource('quiz')">Quiz</button>
-                <button class="tab-btn" onclick="switchResource('flashcards')">Flashcards</button>
-                <button class="tab-btn" onclick="switchResource('classifier')">Clasificador</button>
-                <button class="tab-btn" onclick="switchResource('comparator')">Comparador</button>
-                <button class="tab-btn" onclick="switchResource('pspd')">PSPD</button>
-            </nav>
+            <!-- FLASHCARDS TAB -->
+            <section id="flashcards" class="tab-content">
+                <div class="flashcards-container">
+                    <div class="flashcards-header">
+                        <h2>Flashcards - Conceptos Clave</h2>
+                        <p>Haz clic en las tarjetas para voltearlas</p>
+                    </div>
+                    
+                    <div class="flashcard-controls">
+                        <button id="prev-card" class="btn-secondary">← Anterior</button>
+                        <span id="card-counter">1 / 70</span>
+                        <button id="next-card" class="btn-secondary">Siguiente →</button>
+                    </div>
+                    
+                    <div id="flashcard" class="flashcard" onclick="toggleFlashcard()">
+                        <div class="flashcard-inner">
+                            <div class="flashcard-front">
+                                <h3 id="card-front">Enlace Metálico</h3>
+                            </div>
+                            <div class="flashcard-back">
+                                <p id="card-back">Nube de electrones móviles que permite conducción eléctrica y térmica.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-            <!-- Resource Content Areas -->
-            <div class="resources-container">
-                <!-- Quiz Section -->
-                <section id="quiz" class="resource-section active">
-                    <h3>Quiz Interactivo</h3>
-                    <div id="quiz-content"></div>
-                </section>
+            <!-- CLASSIFIER TAB -->
+            <section id="classifier" class="tab-content">
+                <div class="classifier-container">
+                    <h2>Clasificador de Materiales</h2>
+                    <p>Arrastra los materiales a su categoría correcta</p>
+                    
+                    <div class="classifier-content">
+                        <div id="materials-pool" class="materials-pool">
+                            <!-- Materiales generados dinámicamente -->
+                        </div>
+                        
+                        <div class="categories-grid">
+                            <div class="category-drop" data-category="Metales">
+                                <h3>🔩 Metales</h3>
+                                <div class="drop-zone" id="zone-Metales"></div>
+                            </div>
+                            <div class="category-drop" data-category="Polímeros">
+                                <h3>🔗 Polímeros</h3>
+                                <div class="drop-zone" id="zone-Polímeros"></div>
+                            </div>
+                            <div class="category-drop" data-category="Cerámicos">
+                                <h3>🏺 Cerámicos</h3>
+                                <div class="drop-zone" id="zone-Cerámicos"></div>
+                            </div>
+                            <div class="category-drop" data-category="Compuestos">
+                                <h3>🧬 Compuestos</h3>
+                                <div class="drop-zone" id="zone-Compuestos"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="classifier-controls">
+                        <button onclick="checkClassifier()" class="btn-primary">Verificar Respuestas</button>
+                        <button onclick="resetClassifier()" class="btn-secondary">Reiniciar</button>
+                    </div>
+                    <div id="classifier-result" class="result-message"></div>
+                </div>
+            </section>
 
-                <!-- Flashcards Section -->
-                <section id="flashcards" class="resource-section">
-                    <h3>Flashcards</h3>
-                    <div id="flashcards-content"></div>
-                </section>
+            <!-- COMPARATOR TAB -->
+            <section id="comparator" class="tab-content">
+                <div class="comparator-container">
+                    <h2>Comparador de Materiales</h2>
+                    <p>Selecciona materiales para comparar sus propiedades</p>
+                    
+                    <div class="comparator-controls">
+                        <select id="material-select" class="select-input">
+                            <option value="">Selecciona un material...</option>
+                        </select>
+                        <button onclick="addMaterialToComparison()" class="btn-primary">Agregar</button>
+                        <button onclick="clearComparison()" class="btn-secondary">Limpiar</button>
+                    </div>
+                    
+                    <div id="comparison-table" class="comparison-table">
+                        <!-- Tabla generada dinámicamente -->
+                    </div>
+                </div>
+            </section>
 
-                <!-- Classifier Section -->
-                <section id="classifier" class="resource-section">
-                    <h3>Clasificador de Materiales</h3>
-                    <div id="classifier-content"></div>
-                </section>
-
-                <!-- Comparator Section -->
-                <section id="comparator" class="resource-section">
-                    <h3>Comparador de Propiedades</h3>
-                    <div id="comparator-content"></div>
-                </section>
-
-                <!-- PSPD Section -->
-                <section id="pspd" class="resource-section">
-                    <h3>Simulador PSPD</h3>
-                    <div id="pspd-content"></div>
-                </section>
-            </div>
+            <!-- PSPD SIMULATOR TAB -->
+            <section id="pspd" class="tab-content">
+                <div class="pspd-container">
+                    <h2>Simulador PSPD</h2>
+                    <p>Proceso → Estructura → Propiedad → Desempeño</p>
+                    
+                    <div class="pspd-selector">
+                        <label>Selecciona un ejemplo:</label>
+                        <select id="pspd-example" class="select-input">
+                            <option value="">Elige un material...</option>
+                            <option value="0">Acero Templado</option>
+                            <option value="1">Polímero Cristalino</option>
+                            <option value="2">Compuesto Unidireccional</option>
+                            <option value="3">Zirconia Estabilizada</option>
+                            <option value="4">Semiconductor Dopado</option>
+                        </select>
+                    </div>
+                    
+                    <div id="pspd-diagram" class="pspd-diagram">
+                        <div class="pspd-box">
+                            <h3>Proceso</h3>
+                            <p id="pspd-proceso">Selecciona un ejemplo</p>
+                        </div>
+                        <div class="pspd-arrow">→</div>
+                        <div class="pspd-box">
+                            <h3>Estructura</h3>
+                            <p id="pspd-estructura">-</p>
+                        </div>
+                        <div class="pspd-arrow">→</div>
+                        <div class="pspd-box">
+                            <h3>Propiedad</h3>
+                            <p id="pspd-propiedad">-</p>
+                        </div>
+                        <div class="pspd-arrow">→</div>
+                        <div class="pspd-box">
+                            <h3>Desempeño</h3>
+                            <p id="pspd-desempeño">-</p>
+                        </div>
+                    </div>
+                    
+                    <div id="pspd-image" class="pspd-image">
+                        <p id="pspd-imagen-desc">Imagen descriptiva aquí</p>
+                    </div>
+                </div>
+            </section>
         </main>
 
-        <!-- Footer -->
+        <!-- FOOTER -->
         <footer class="footer">
-            <p>CIM Learning Platform © 2026 | Diseñado para estudiantes de Ingeniería</p>
+            <p>CIM Learning Platform © 2026 | Preparación para Primer Parcial de Ciencia e Ingeniería de Materiales</p>
         </footer>
     </div>
 
+    <script src="questions.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

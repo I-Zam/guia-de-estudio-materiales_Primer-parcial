@@ -1,402 +1,472 @@
-// ============================================
-// DATOS DE PREGUNTAS DEL EXAMEN (50% de las preguntas)
-// ============================================
-
-const quizQuestions = [
-    // SECCIÓN A: Conceptual (Preguntas 1-8)
-    {
-        id: 1,
-        type: "multiple",
-        question: "¿Cuál es la diferencia fundamental entre alotropía y polimorfismo?",
-        options: [
-            "La alotropía ocurre solo en elementos puros, mientras que el polimorfismo ocurre en compuestos",
-            "La alotropía es reversible y el polimorfismo es irreversible",
-            "No hay diferencia, son sinónimos",
-            "La alotropía depende de la temperatura y el polimorfismo de la presión"
-        ],
-        correct: 0,
-        explanation: "La alotropía se refiere exclusivamente a elementos puros (Fe, C, Sn), mientras que el polimorfismo describe la capacidad de compuestos químicos para existir en múltiples formas cristalinas."
-    },
-    {
-        id: 2,
-        type: "multiple",
-        question: "En la estructura BCC del hierro α, ¿cuántos átomos de hierro rodean a un átomo central?",
-        options: [
-            "6 átomos",
-            "8 átomos",
-            "12 átomos",
-            "4 átomos"
-        ],
-        correct: 1,
-        explanation: "En la estructura BCC (Body-Centered Cubic), cada átomo central está rodeado por 8 átomos en los vértices de un cubo."
-    },
-    {
-        id: 3,
-        type: "multiple",
-        question: "¿Por qué el diamante es más duro que el grafito si ambos son alótropos del carbono?",
-        options: [
-            "El diamante tiene mayor densidad",
-            "El diamante tiene una red 3D con enlaces covalentes fuertes en todas direcciones, mientras que el grafito tiene capas débilmente unidas",
-            "El diamante tiene más electrones",
-            "El grafito se degrada más fácilmente con el tiempo"
-        ],
-        correct: 1,
-        explanation: "La dureza del diamante proviene de su estructura 3D con enlaces covalentes fuertes en todas direcciones. El grafito tiene capas que pueden deslizar fácilmente entre sí debido a fuerzas de Van der Waals débiles."
-    },
-    {
-        id: 4,
-        type: "multiple",
-        question: "¿Qué es la cristalinidad en polímeros?",
-        options: [
-            "El grado de transparencia del polímero",
-            "El grado de orden en la disposición de las cadenas poliméricas",
-            "La temperatura de fusión del polímero",
-            "La resistencia a la tracción del material"
-        ],
-        correct: 1,
-        explanation: "La cristalinidad es el grado de orden en la disposición de las cadenas poliméricas. Mayor cristalinidad implica mayor rigidez y resistencia, pero menor ductilidad."
-    },
-    {
-        id: 5,
-        type: "multiple",
-        question: "¿Cuál es la relación entre la Temperatura de Transición Vítrea (Tg) y el comportamiento mecánico de un polímero?",
-        options: [
-            "Por debajo de Tg, el polímero es gomoso; por encima, es vítreo",
-            "Por debajo de Tg, el polímero es vítreo y frágil; por encima, es gomoso y flexible",
-            "Tg es la temperatura de fusión del polímero",
-            "Tg no afecta el comportamiento mecánico"
-        ],
-        correct: 1,
-        explanation: "Por debajo de Tg, las cadenas están 'congeladas' y el polímero es rígido y frágil (estado vítreo). Por encima de Tg, adquieren movilidad y el material es flexible (estado gomoso)."
-    },
-    {
-        id: 6,
-        type: "multiple",
-        question: "¿Qué caracteriza a los materiales cerámicos en términos de enlaces atómicos?",
-        options: [
-            "Enlaces metálicos débiles",
-            "Enlaces iónicos y covalentes muy fuertes",
-            "Enlaces de Van der Waals",
-            "Enlaces de hidrógeno"
-        ],
-        correct: 1,
-        explanation: "Los cerámicos tienen enlaces iónicos y covalentes muy fuertes, lo que explica su dureza, fragilidad y alta resistencia térmica."
-    },
-    {
-        id: 7,
-        type: "multiple",
-        question: "¿Por qué los cerámicos son frágiles a pesar de ser muy duros?",
-        options: [
-            "Porque tienen baja densidad",
-            "Porque sus enlaces rígidos no permiten deformación plástica; la energía se libera en fractura súbita",
-            "Porque absorben agua fácilmente",
-            "Porque tienen baja conductividad térmica"
-        ],
-        correct: 1,
-        explanation: "La fragilidad de los cerámicos es consecuencia directa de la rigidez de sus enlaces. No pueden deformarse plásticamente, por lo que la energía se libera en una fractura repentina y catastrófica."
-    },
-    {
-        id: 8,
-        type: "multiple",
-        question: "¿Cuál es el rol de la interfase en un material compuesto?",
-        options: [
-            "Decorativa",
-            "Transferir esfuerzos entre la matriz y el refuerzo, permitiendo desviar grietas",
-            "Aumentar el peso del material",
-            "Reducir la conductividad térmica"
-        ],
-        correct: 1,
-        explanation: "La interfase es crítica para transferir esfuerzos desde la matriz hacia el refuerzo. Una buena adherencia permite desviar grietas y aumentar la tenacidad del compuesto."
-    },
-
-    // SECCIÓN B: Análisis Estructural (Preguntas 9-11)
-    {
-        id: 9,
-        type: "multiple",
-        question: "¿Cómo afecta el tratamiento térmico a la microestructura del acero?",
-        options: [
-            "No tiene efecto",
-            "Modifica la proporción de fases (austenita, ferrita, cementita) y el tamaño de grano, alterando propiedades mecánicas",
-            "Solo cambia el color",
-            "Aumenta la densidad permanentemente"
-        ],
-        correct: 1,
-        explanation: "El tratamiento térmico modifica la microestructura al cambiar la proporción de fases presentes y el tamaño de grano. Esto permite ajustar propiedades como dureza, ductilidad y resistencia."
-    },
-    {
-        id: 10,
-        type: "multiple",
-        question: "¿Qué sucede cuando se calienta un polímero semicristalino por encima de su Tg?",
-        options: [
-            "Se funde completamente",
-            "Las zonas amorfas adquieren movilidad, pero las zonas cristalinas permanecen ordenadas",
-            "Se vuelve más duro",
-            "Se disuelve en agua"
-        ],
-        correct: 1,
-        explanation: "Cuando se supera Tg, las zonas amorfas se ablandan y adquieren movilidad, pero las zonas cristalinas mantienen su orden. El material se vuelve flexible pero no se funde (eso ocurre en Tm)."
-    },
-    {
-        id: 11,
-        type: "multiple",
-        question: "¿Cómo influye el dopaje en la conductividad de un semiconductor?",
-        options: [
-            "No tiene efecto",
-            "Aumenta la concentración de portadores de carga (electrones o huecos), incrementando la conductividad",
-            "Reduce la conductividad",
-            "Solo afecta el color del material"
-        ],
-        correct: 1,
-        explanation: "El dopaje introduce impurezas que generan portadores de carga adicionales. El dopaje tipo N añade electrones; el tipo P añade huecos. Ambos aumentan significativamente la conductividad."
-    },
-
-    // SECCIÓN C: Aplicación Ashby (Preguntas 12-13)
-    {
-        id: 12,
-        type: "multiple",
-        question: "En el diseño de un ala de avión, ¿cuál es el índice de desempeño más importante?",
-        options: [
-            "Resistencia/Densidad (R/ρ) para maximizar rigidez con mínimo peso",
-            "Conductividad térmica",
-            "Dureza absoluta",
-            "Costo por kg"
-        ],
-        correct: 0,
-        explanation: "Para aplicaciones aeroespaciales, la relación resistencia/peso (R/ρ) es crítica. Materiales como la fibra de carbono y aleaciones de aluminio son preferidos por su alto índice R/ρ."
-    },
-    {
-        id: 13,
-        type: "multiple",
-        question: "¿Por qué se prefieren los polímeros reforzados con fibra de carbono sobre el acero en la industria aeroespacial?",
-        options: [
-            "Son más baratos",
-            "Tienen mayor índice resistencia/peso, reduciendo combustible necesario y aumentando carga útil",
-            "Son más fáciles de fabricar",
-            "Tienen mejor conductividad térmica"
-        ],
-        correct: 1,
-        explanation: "Los compuestos de fibra de carbono ofrecen un índice R/ρ superior al acero, lo que permite reducir peso, consumo de combustible y aumentar la carga útil del avión."
-    },
-
-    // SECCIÓN D: Caso Integrador (Preguntas 14-16)
-    {
-        id: 14,
-        type: "multiple",
-        question: "En un diodo semiconductor para aplicaciones espaciales, ¿cuál es el principal desafío de la radiación?",
-        options: [
-            "Aumenta la conductividad",
-            "Genera defectos que atrapan portadores de carga, reduciendo eficiencia",
-            "Cambia el color del material",
-            "Aumenta la temperatura de fusión"
-        ],
-        correct: 1,
-        explanation: "La radiación cósmica en el espacio crea defectos en la red cristalina que actúan como trampas para portadores de carga, reduciendo la eficiencia del diodo. Por eso se usan materiales más resistentes como GaAs."
-    },
-    {
-        id: 15,
-        type: "multiple",
-        question: "¿Por qué el GaAs es preferido sobre Si para celdas solares en satélites?",
-        options: [
-            "Es más barato",
-            "Tiene mayor brecha de energía (Eg ≈ 1.42 eV), mejor eficiencia bajo radiación y mayor resistencia a defectos",
-            "Es más fácil de fabricar",
-            "Tiene menor densidad"
-        ],
-        correct: 1,
-        explanation: "GaAs tiene una brecha de energía más grande que Si, lo que lo hace más resistente a la radiación. Además, su estructura cristalina es más robusta frente a defectos generados por radiación."
-    },
-    {
-        id: 16,
-        type: "multiple",
-        question: "¿Cuál es la relación entre estructura cristalina, dopaje y desempeño en un diodo semiconductor?",
-        options: [
-            "No hay relación",
-            "La estructura define la brecha de energía; el dopaje controla portadores; juntos determinan eficiencia y voltaje de operación",
-            "Solo la estructura importa",
-            "Solo el dopaje importa"
-        ],
-        correct: 1,
-        explanation: "La estructura cristalina (Si, GaAs, etc.) define la brecha de energía Eg. El dopaje (tipo N o P) controla la concentración de portadores. Ambos factores determinan el voltaje de circuito abierto (Voc) y la eficiencia del diodo."
-    }
-];
-
-// ============================================
-// FLASHCARDS DATA
-// ============================================
-
-const flashcardsData = [
-    { front: "Alotropía", back: "Capacidad de un elemento puro para existir en múltiples formas cristalinas bajo diferentes condiciones de temperatura y presión." },
-    { front: "Polimorfismo", back: "Capacidad de un compuesto químico para cristalizar en más de una estructura cristalina con la misma composición química." },
-    { front: "Estructura BCC", back: "Body-Centered Cubic. Estructura cúbica con un átomo en el centro y 8 en los vértices. Ejemplo: Hierro α." },
-    { front: "Estructura FCC", back: "Face-Centered Cubic. Estructura cúbica con átomos en los vértices y en el centro de cada cara. Ejemplo: Hierro γ, Aluminio." },
-    { front: "Cristalinidad", back: "Grado de orden en la disposición de las cadenas poliméricas. Mayor cristalinidad = mayor rigidez y resistencia, menor ductilidad." },
-    { front: "Temperatura de Transición Vítrea (Tg)", back: "Temperatura a la que un polímero pasa de estado vítreo (rígido) a estado gomoso (flexible). Las cadenas adquieren movilidad." },
-    { front: "Enlace Iónico", back: "Enlace entre átomos con diferente electronegatividad, donde se transfieren electrones. Presente en cerámicos como NaCl." },
-    { front: "Enlace Covalente", back: "Enlace donde átomos comparten electrones. Muy fuerte y direccional. Presente en diamante, Si, GaAs." },
-    { front: "Interfase", back: "Región de contacto entre la matriz y el refuerzo en un compuesto. Crítica para transferir esfuerzos y desviar grietas." },
-    { front: "Índice R/ρ", back: "Relación resistencia/densidad. Parámetro clave en diseño de estructuras ligeras. Mayor R/ρ = mejor para aplicaciones aeroespaciales." },
-    { front: "Dopaje Tipo N", back: "Adición de impurezas donadoras (P, As) a un semiconductor. Genera electrones como portadores mayoritarios." },
-    { front: "Dopaje Tipo P", back: "Adición de impurezas aceptoras (B, Ga) a un semiconductor. Genera huecos como portadores mayoritarios." },
-    { front: "Unión P-N", back: "Interfase entre regiones dopadas tipo P y tipo N. Base de diodos, transistores y celdas solares." },
-    { front: "Brecha de Energía (Eg)", back: "Diferencia de energía entre banda de conducción y banda de valencia. Define si un material es conductor, semiconductor o aislante." },
-    { front: "Fractura Frágil", back: "Rotura repentina sin deformación plástica previa. Característica de cerámicos y vidrios debido a enlaces rígidos." }
-];
-
-// ============================================
-// CLASSIFIER DATA
-// ============================================
-
-const classifierMaterials = [
-    { name: "Hierro", category: "Metales" },
-    { name: "Polietileno", category: "Polímeros" },
-    { name: "Alúmina (Al₂O₃)", category: "Cerámicos" },
-    { name: "Fibra de Carbono/Resina", category: "Compuestos" },
-    { name: "Cobre", category: "Metales" },
-    { name: "Poliestireno", category: "Polímeros" },
-    { name: "Zirconia (ZrO₂)", category: "Cerámicos" },
-    { name: "Vidrio Reforzado", category: "Compuestos" },
-    { name: "Aluminio", category: "Metales" },
-    { name: "Nylon", category: "Polímeros" },
-    { name: "Carburo de Silicio (SiC)", category: "Cerámicos" },
-    { name: "Kevlar/Resina", category: "Compuestos" }
-];
-
-// ============================================
-// COMPARATOR DATA
-// ============================================
-
-const materialsComparison = {
-    "Acero": {
-        Densidad: "7.85 g/cm³",
-        ResistenciaTensil: "250-400 MPa",
-        Modulo: "200 GPa",
-        Ductilidad: "Alta",
-        ConductividadTermica: "50 W/m·K",
-        Costo: "Bajo-Medio"
-    },
-    "Aluminio": {
-        Densidad: "2.70 g/cm³",
-        ResistenciaTensil: "70-500 MPa",
-        Modulo: "70 GPa",
-        Ductilidad: "Alta",
-        ConductividadTermica: "160 W/m·K",
-        Costo: "Medio"
-    },
-    "Fibra de Carbono": {
-        Densidad: "1.55 g/cm³",
-        ResistenciaTensil: "3500 MPa",
-        Modulo: "230 GPa",
-        Ductilidad: "Baja",
-        ConductividadTermica: "5 W/m·K",
-        Costo: "Alto"
-    },
-    "Cerámica (Al₂O₃)": {
-        Densidad: "3.95 g/cm³",
-        ResistenciaTensil: "300-400 MPa",
-        Modulo: "300 GPa",
-        Ductilidad: "Muy Baja",
-        ConductividadTermica: "30 W/m·K",
-        Costo: "Medio"
-    },
-    "Polímero (PE)": {
-        Densidad: "0.92 g/cm³",
-        ResistenciaTensil: "20-40 MPa",
-        Modulo: "1 GPa",
-        Ductilidad: "Alta",
-        ConductividadTermica: "0.5 W/m·K",
-        Costo: "Bajo"
-    }
-};
-
-// ============================================
-// VARIABLES GLOBALES
-// ============================================
-
-let currentQuizIndex = 0;
+// ===== VARIABLES GLOBALES =====
+let currentQuestionIndex = 0;
 let quizScore = 0;
+let selectedAnswers = [];
 let currentFlashcardIndex = 0;
-let flashcardFlipped = false;
-let classifierScore = 0;
 let selectedMaterials = [];
+let draggedElement = null;
 
-// ============================================
-// FUNCIONES PRINCIPALES
-// ============================================
+// ===== DATOS DE FLASHCARDS =====
+const flashcards = [
+    { front: "Enlace Metálico", back: "Nube de electrones móviles que permite conducción eléctrica y térmica." },
+    { front: "Enlace Iónico", back: "Transferencia de electrones entre átomos, formando cationes y aniones." },
+    { front: "Enlace Covalente", back: "Compartición de electrones entre átomos para alcanzar estabilidad." },
+    { front: "Alotropía", back: "Capacidad de un elemento puro para existir en múltiples formas cristalinas." },
+    { front: "Polimorfismo", back: "Capacidad de un compuesto para cristalizar en más de una estructura." },
+    { front: "Isotropía", back: "Propiedades iguales en todas las direcciones del material." },
+    { front: "Anisotropía", back: "Propiedades que varían según la dirección del material." },
+    { front: "Monómero", back: "Unidad molecular pequeña que se repite para formar un polímero." },
+    { front: "Polímero", back: "Macromolécula formada por la repetición de monómeros unidos por enlaces covalentes." },
+    { front: "Termoplástico", back: "Polímero que se funde al calentarse y se solidifica al enfriar." },
+    { front: "Termoestable", back: "Polímero que no se funde, se quema antes de cambiar de estado." },
+    { front: "Elastómero", back: "Polímero con gran elasticidad y capacidad de recuperar su forma." },
+    { front: "Cristalinidad", back: "Grado de orden en la estructura molecular de un polímero." },
+    { front: "Temperatura de Transición Vítrea (Tg)", back: "Temperatura a la que un polímero pasa de estado vítreo a gomoso." },
+    { front: "Punto de Fusión (Tm)", back: "Temperatura a la que un material sólido se convierte en líquido." },
+    { front: "Dureza", back: "Resistencia de un material a la deformación o rayado." },
+    { front: "Ductilidad", back: "Capacidad de un material para deformarse sin romperse." },
+    { front: "Fragilidad", back: "Tendencia de un material a romperse sin deformación previa." },
+    { front: "Tenacidad", back: "Capacidad de un material para absorber energía antes de fracturarse." },
+    { front: "Resistencia a la Compresión", back: "Capacidad de un material para soportar fuerzas de compresión." },
+    { front: "Módulo de Young", back: "Medida de la rigidez de un material bajo esfuerzo de tracción." },
+    { front: "Cerámica", back: "Material inorgánico no metálico formado por combinación de elementos metálicos y no metálicos." },
+    { front: "Refractario", back: "Cerámica diseñada para mantener propiedades a temperaturas muy elevadas (>1500°C)." },
+    { front: "Vidrio", back: "Cerámica amorfa formada por enfriamiento rápido de un líquido fundido." },
+    { front: "Material Compuesto", back: "Combinación de dos o más materiales con propiedades diferentes." },
+    { front: "Matriz", back: "Material continuo que rodea y soporta al refuerzo en un compuesto." },
+    { front: "Refuerzo", back: "Fase dispersa que proporciona resistencia al compuesto." },
+    { front: "Interfase", back: "Límite entre la matriz y el refuerzo donde ocurre la transferencia de carga." },
+    { front: "Fibra de Carbono", back: "Refuerzo de alta resistencia y bajo peso usado en compuestos avanzados." },
+    { front: "Laminado", back: "Compuesto formado por capas de material reforzado." },
+    { front: "Semiconductor", back: "Material con conductividad eléctrica intermedia entre conductores y aislantes." },
+    { front: "Dopaje", back: "Introducción de impurezas en un semiconductor para modificar su conductividad." },
+    { front: "Dopaje Tipo N", back: "Adición de átomos donantes (P, As) que aportan electrones libres." },
+    { front: "Dopaje Tipo P", back: "Adición de átomos aceptores (B, Ga) que crean huecos positivos." },
+    { front: "Unión P-N", back: "Interfaz entre regiones dopadas tipo p y tipo n que forma un diodo." },
+    { front: "Brecha de Energía (Eg)", back: "Diferencia de energía entre la banda de conducción y la de valencia." },
+    { front: "Banda de Valencia", back: "Banda de energía más externa con electrones débilmente ligados." },
+    { front: "Banda de Conducción", back: "Banda de energía donde los electrones pueden moverse libremente." },
+    { front: "Diodo", back: "Dispositivo semiconductor que permite el flujo de corriente en una dirección." },
+    { front: "Transistor", back: "Dispositivo semiconductor que amplifica o conmuta señales eléctricas." },
+    { front: "Circuito Integrado", back: "Dispositivo que contiene miles o millones de transistores en un chip." },
+    { front: "LED", back: "Diodo emisor de luz que emite fotones al conducir corriente." },
+    { front: "Celda Solar", back: "Dispositivo que convierte luz en electricidad mediante el efecto fotovoltaico." },
+    { front: "Estructura Cristalina", back: "Arreglo periódico tridimensional de átomos en un material." },
+    { front: "Grano", back: "Región de un material policristalino con orientación cristalina única." },
+    { front: "Frontera de Grano", back: "Interfaz entre granos con diferentes orientaciones cristalinas." },
+    { front: "Defecto Puntual", back: "Defecto cristalino localizado en un punto (vacancia, intersticio)." },
+    { front: "Dislocación", back: "Defecto lineal que permite el movimiento de átomos bajo esfuerzo." },
+    { front: "Tratamiento Térmico", back: "Proceso de calentamiento y enfriamiento controlado para modificar propiedades." },
+    { front: "Temple", back: "Enfriamiento rápido para congelar una estructura de alta temperatura." },
+    { front: "Recocido", back: "Calentamiento seguido de enfriamiento lento para aliviar tensiones." },
+    { front: "Revenido", back: "Calentamiento moderado después del temple para mejorar tenacidad." },
+    { front: "Austenita", back: "Fase FCC del hierro estable entre 912°C y 1394°C, soluble en carbono." },
+    { front: "Ferrita", back: "Fase BCC del hierro estable a temperatura ambiente, magnética." },
+    { front: "Cementita", back: "Compuesto Fe₃C muy duro formado en aceros." },
+    { front: "Perlita", back: "Microestructura laminada de ferrita y cementita en aceros." },
+    { front: "Martensita", back: "Fase metaestable dura formada por temple rápido de austenita." },
+    { front: "Acero", back: "Aleación de hierro y carbono (0.02-2% C) con excelente combinación de propiedades." },
+    { front: "Hierro Fundido", back: "Aleación de Fe-C (2-4% C) con buena fundibilidad pero frágil." },
+    { front: "Aleación", back: "Combinación de dos o más elementos metálicos para mejorar propiedades." },
+    { front: "Solución Sólida", back: "Fase única donde un elemento está disuelto en otro." },
+    { front: "Procesamiento de Materiales", back: "Conjunto de operaciones para transformar materias primas en productos útiles." },
+    { front: "Sinterización", back: "Proceso de calentamiento que une partículas sin llegar a la fusión." },
+    { front: "Moldeo por Inyección", back: "Proceso de inyectar material fundido en un molde bajo presión." },
+    { front: "Extrusión", back: "Proceso de forzar material a través de un orificio para crear formas." },
+    { front: "Laminado", back: "Proceso de reducir espesor pasando material entre rodillos." },
+    { front: "Forjado", back: "Proceso de deformación plástica bajo calor y presión." },
+    { front: "Índice de Desempeño", back: "Relación matemática que relaciona propiedades para optimizar diseño." },
+    { front: "Relación R/ρ", back: "Índice de resistencia específica (resistencia/densidad)." },
+    { front: "Relación E/ρ", back: "Índice de rigidez específica (módulo/densidad)." },
+    { front: "Matriz de Decisión", back: "Herramienta para comparar múltiples opciones bajo varios criterios." },
+    { front: "Trade-off", back: "Compromiso entre dos propiedades que no pueden optimizarse simultáneamente." },
+    { front: "Selección de Materiales", back: "Proceso de elegir el material óptimo para una aplicación específica." },
+    { front: "Restricción de Diseño", back: "Límite que debe cumplirse obligatoriamente en el diseño." },
+    { front: "Objetivo de Diseño", back: "Meta que se busca optimizar (minimizar o maximizar)." },
+    { front: "Función del Componente", back: "Rol específico que debe cumplir un material en una aplicación." }
+];
 
-function switchResource(resource) {
-    // Ocultar todas las secciones
-    const sections = document.querySelectorAll('.resource-section');
-    sections.forEach(section => section.classList.remove('active'));
+// ===== DATOS DE MATERIALES PARA CLASIFICADOR =====
+const materialsData = [
+    { name: "Acero", category: "Metales" },
+    { name: "Aluminio", category: "Metales" },
+    { name: "Cobre", category: "Metales" },
+    { name: "Titanio", category: "Metales" },
+    { name: "Níquel", category: "Metales" },
+    { name: "Polietileno", category: "Polímeros" },
+    { name: "Poliestireno", category: "Polímeros" },
+    { name: "PVC", category: "Polímeros" },
+    { name: "Nylon", category: "Polímeros" },
+    { name: "Policarbonato", category: "Polímeros" },
+    { name: "Alúmina", category: "Cerámicos" },
+    { name: "Sílice", category: "Cerámicos" },
+    { name: "Zirconia", category: "Cerámicos" },
+    { name: "Carburo de Silicio", category: "Cerámicos" },
+    { name: "Vidrio", category: "Cerámicos" },
+    { name: "Fibra de Carbono/Epoxi", category: "Compuestos" },
+    { name: "Fibra de Vidrio/Poliéster", category: "Compuestos" },
+    { name: "Kevlar/Epoxi", category: "Compuestos" },
+    { name: "Carbono/Carbono", category: "Compuestos" },
+    { name: "Metal/Cerámica", category: "Compuestos" },
+    { name: "Silicio", category: "Metales" },
+    { name: "Magnesio", category: "Metales" },
+    { name: "Zinc", category: "Metales" },
+    { name: "Plomo", category: "Metales" },
+    { name: "Acrílico", category: "Polímeros" }
+];
 
-    // Mostrar la sección seleccionada
-    const selectedSection = document.getElementById(resource);
-    if (selectedSection) {
-        selectedSection.classList.add('active');
+// ===== DATOS DE MATERIALES PARA COMPARADOR =====
+const materialsComparator = [
+    {
+        name: "Acero Dulce",
+        properties: {
+            "Densidad (g/cm³)": 7.85,
+            "Módulo Young (GPa)": 210,
+            "Resistencia Tensil (MPa)": 250,
+            "Elongación (%)": 25,
+            "Costo (USD/kg)": 0.5,
+            "Conductividad Térmica (W/m·K)": 50
+        }
+    },
+    {
+        name: "Aluminio",
+        properties: {
+            "Densidad (g/cm³)": 2.70,
+            "Módulo Young (GPa)": 70,
+            "Resistencia Tensil (MPa)": 90,
+            "Elongación (%)": 40,
+            "Costo (USD/kg)": 2.0,
+            "Conductividad Térmica (W/m·K)": 237
+        }
+    },
+    {
+        name: "Titanio",
+        properties: {
+            "Densidad (g/cm³)": 4.51,
+            "Módulo Young (GPa)": 103,
+            "Resistencia Tensil (MPa)": 1160,
+            "Elongación (%)": 10,
+            "Costo (USD/kg)": 15.0,
+            "Conductividad Térmica (W/m·K)": 22
+        }
+    },
+    {
+        name: "Polietileno",
+        properties: {
+            "Densidad (g/cm³)": 0.95,
+            "Módulo Young (GPa)": 0.8,
+            "Resistencia Tensil (MPa)": 20,
+            "Elongación (%)": 500,
+            "Costo (USD/kg)": 1.5,
+            "Conductividad Térmica (W/m·K)": 0.5
+        }
+    },
+    {
+        name: "Poliestireno",
+        properties: {
+            "Densidad (g/cm³)": 1.05,
+            "Módulo Young (GPa)": 3.0,
+            "Resistencia Tensil (MPa)": 50,
+            "Elongación (%)": 2,
+            "Costo (USD/kg)": 1.2,
+            "Conductividad Térmica (W/m·K)": 0.1
+        }
+    },
+    {
+        name: "Nylon 6",
+        properties: {
+            "Densidad (g/cm³)": 1.14,
+            "Módulo Young (GPa)": 3.0,
+            "Resistencia Tensil (MPa)": 80,
+            "Elongación (%)": 300,
+            "Costo (USD/kg)": 2.5,
+            "Conductividad Térmica (W/m·K)": 0.25
+        }
+    },
+    {
+        name: "Alúmina (Al₂O₃)",
+        properties: {
+            "Densidad (g/cm³)": 3.97,
+            "Módulo Young (GPa)": 380,
+            "Resistencia Tensil (MPa)": 400,
+            "Elongación (%)": 0,
+            "Costo (USD/kg)": 5.0,
+            "Conductividad Térmica (W/m·K)": 30
+        }
+    },
+    {
+        name: "Zirconia (ZrO₂)",
+        properties: {
+            "Densidad (g/cm³)": 6.10,
+            "Módulo Young (GPa)": 200,
+            "Resistencia Tensil (MPa)": 1200,
+            "Elongación (%)": 0,
+            "Costo (USD/kg)": 20.0,
+            "Conductividad Térmica (W/m·K)": 2.5
+        }
+    },
+    {
+        name: "Vidrio",
+        properties: {
+            "Densidad (g/cm³)": 2.50,
+            "Módulo Young (GPa)": 70,
+            "Resistencia Tensil (MPa)": 50,
+            "Elongación (%)": 0,
+            "Costo (USD/kg)": 0.3,
+            "Conductividad Térmica (W/m·K)": 1.0
+        }
+    },
+    {
+        name: "Fibra de Carbono/Epoxi",
+        properties: {
+            "Densidad (g/cm³)": 1.60,
+            "Módulo Young (GPa)": 230,
+            "Resistencia Tensil (MPa)": 1500,
+            "Elongación (%)": 1,
+            "Costo (USD/kg)": 25.0,
+            "Conductividad Térmica (W/m·K)": 5.0
+        }
+    },
+    {
+        name: "Fibra de Vidrio/Poliéster",
+        properties: {
+            "Densidad (g/cm³)": 1.85,
+            "Módulo Young (GPa)": 40,
+            "Resistencia Tensil (MPa)": 450,
+            "Elongación (%)": 3,
+            "Costo (USD/kg)": 3.0,
+            "Conductividad Térmica (W/m·K)": 0.3
+        }
+    },
+    {
+        name: "Kevlar/Epoxi",
+        properties: {
+            "Densidad (g/cm³)": 1.45,
+            "Módulo Young (GPa)": 130,
+            "Resistencia Tensil (MPa)": 1400,
+            "Elongación (%)": 2,
+            "Costo (USD/kg)": 30.0,
+            "Conductividad Térmica (W/m·K)": 0.5
+        }
+    },
+    {
+        name: "Cobre",
+        properties: {
+            "Densidad (g/cm³)": 8.96,
+            "Módulo Young (GPa)": 130,
+            "Resistencia Tensil (MPa)": 220,
+            "Elongación (%)": 45,
+            "Costo (USD/kg)": 8.0,
+            "Conductividad Térmica (W/m·K)": 401
+        }
+    },
+    {
+        name: "Magnesio",
+        properties: {
+            "Densidad (g/cm³)": 1.81,
+            "Módulo Young (GPa)": 45,
+            "Resistencia Tensil (MPa)": 170,
+            "Elongación (%)": 3,
+            "Costo (USD/kg)": 3.0,
+            "Conductividad Térmica (W/m·K)": 156
+        }
+    },
+    {
+        name: "Níquel",
+        properties: {
+            "Densidad (g/cm³)": 8.90,
+            "Módulo Young (GPa)": 200,
+            "Resistencia Tensil (MPa)": 460,
+            "Elongación (%)": 30,
+            "Costo (USD/kg)": 10.0,
+            "Conductividad Térmica (W/m·K)": 91
+        }
+    },
+    {
+        name: "Acero Inoxidable 316",
+        properties: {
+            "Densidad (g/cm³)": 8.00,
+            "Módulo Young (GPa)": 193,
+            "Resistencia Tensil (MPa)": 515,
+            "Elongación (%)": 30,
+            "Costo (USD/kg)": 3.5,
+            "Conductividad Térmica (W/m·K)": 16
+        }
+    },
+    {
+        name: "Carburo de Silicio",
+        properties: {
+            "Densidad (g/cm³)": 3.21,
+            "Módulo Young (GPa)": 410,
+            "Resistencia Tensil (MPa)": 550,
+            "Elongación (%)": 0,
+            "Costo (USD/kg)": 10.0,
+            "Conductividad Térmica (W/m·K)": 120
+        }
+    },
+    {
+        name: "Nitruro de Silicio",
+        properties: {
+            "Densidad (g/cm³)": 3.44,
+            "Módulo Young (GPa)": 310,
+            "Resistencia Tensil (MPa)": 1000,
+            "Elongación (%)": 0,
+            "Costo (USD/kg)": 15.0,
+            "Conductividad Térmica (W/m·K)": 30
+        }
+    },
+    {
+        name: "Policarbonato",
+        properties: {
+            "Densidad (g/cm³)": 1.20,
+            "Módulo Young (GPa)": 2.3,
+            "Resistencia Tensil (MPa)": 65,
+            "Elongación (%)": 100,
+            "Costo (USD/kg)": 3.0,
+            "Conductividad Térmica (W/m·K)": 0.2
+        }
+    },
+    {
+        name: "Acrílico",
+        properties: {
+            "Densidad (g/cm³)": 1.19,
+            "Módulo Young (GPa)": 3.2,
+            "Resistencia Tensil (MPa)": 72,
+            "Elongación (%)": 5,
+            "Costo (USD/kg)": 2.0,
+            "Conductividad Térmica (W/m·K)": 0.2
+        }
+    },
+    {
+        name: "PVC",
+        properties: {
+            "Densidad (g/cm³)": 1.38,
+            "Módulo Young (GPa)": 2.7,
+            "Resistencia Tensil (MPa)": 50,
+            "Elongación (%)": 40,
+            "Costo (USD/kg)": 1.0,
+            "Conductividad Térmica (W/m·K)": 0.16
+        }
+    },
+    {
+        name: "Silicio",
+        properties: {
+            "Densidad (g/cm³)": 2.33,
+            "Módulo Young (GPa)": 130,
+            "Resistencia Tensil (MPa)": 100,
+            "Elongación (%)": 0,
+            "Costo (USD/kg)": 5.0,
+            "Conductividad Térmica (W/m·K)": 150
+        }
     }
+];
 
-    // Actualizar botones de tabs
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    tabButtons.forEach(btn => btn.classList.remove('active'));
+// ===== DATOS PARA SIMULADOR PSPD =====
+const pspdExamples = [
+    {
+        name: "Acero Templado",
+        proceso: "Calentamiento a 900°C + Enfriamiento rápido en agua",
+        estructura: "Martensita: estructura tetragonal distorsionada con alta densidad de dislocaciones",
+        propiedad: "Dureza muy alta (58-62 HRC), resistencia elevada, baja ductilidad",
+        desempeño: "Excelente para herramientas de corte, cuchillas, muelles de precisión"
+    },
+    {
+        name: "Polímero Cristalino",
+        proceso: "Moldeo por inyección + Enfriamiento controlado",
+        estructura: "Semicristalinidad 50-80%: zonas cristalinas ordenadas + zonas amorfas",
+        propiedad: "Rigidez moderada, resistencia química, baja densidad, transparencia",
+        desempeño: "Ideal para envases, tuberías, componentes automotrices, lentes"
+    },
+    {
+        name: "Compuesto Unidireccional",
+        proceso: "Alineación de fibras + Impregnación con matriz epoxi",
+        estructura: "Fibras paralelas en matriz polimérica, interfase matriz-fibra crítica",
+        propiedad: "Resistencia/peso muy alta en dirección de fibras, anisotropía pronunciada",
+        desempeño: "Alas de aviones, palas de turbinas eólicas, estructuras aeroespaciales"
+    },
+    {
+        name: "Zirconia Estabilizada",
+        proceso: "Dopaje con óxido de itrio (Y₂O₃) + Sinterización a 1600°C",
+        estructura: "Fase cúbica metaestable a temperatura ambiente, baja expansión térmica",
+        propiedad: "Resistencia al choque térmico, tenacidad mejorada, refractariedad",
+        desempeño: "Implantes dentales, revestimientos de turbinas, crucibles refractarios"
+    },
+    {
+        name: "Semiconductor Dopado",
+        proceso: "Dopaje con fósforo (tipo N) o boro (tipo P) + Difusión térmica",
+        estructura: "Unión P-N con región de agotamiento, portadores mayoritarios controlados",
+        propiedad: "Conductividad controlada, rectificación de corriente, emisión de luz (LED)",
+        desempeño: "Diodos, transistores, circuitos integrados, celdas solares, LEDs"
+    }
+];
+
+// ===== FUNCIONES DE NAVEGACIÓN =====
+function switchTab(tabName) {
+    // Ocultar todos los tabs
+    const contents = document.querySelectorAll('.tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+
+    // Desactivar todos los botones
+    const buttons = document.querySelectorAll('.tab-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+
+    // Mostrar tab seleccionado
+    document.getElementById(tabName).classList.add('active');
+
+    // Activar botón seleccionado
     event.target.classList.add('active');
 
-    // Inicializar el recurso
-    switch(resource) {
-        case 'quiz':
-            initializeQuiz();
-            break;
-        case 'flashcards':
-            initializeFlashcards();
-            break;
-        case 'classifier':
-            initializeClassifier();
-            break;
-        case 'comparator':
-            initializeComparator();
-            break;
-        case 'pspd':
-            initializePSPD();
-            break;
+    // Inicializar contenido si es necesario
+    if (tabName === 'quiz') {
+        initQuiz();
+    } else if (tabName === 'flashcards') {
+        initFlashcards();
+    } else if (tabName === 'classifier') {
+        initClassifier();
+    } else if (tabName === 'comparator') {
+        initComparator();
+    } else if (tabName === 'pspd') {
+        initPSPD();
     }
 }
 
-// ============================================
-// QUIZ FUNCTIONS
-// ============================================
-
-function initializeQuiz() {
-    currentQuizIndex = 0;
-    quizScore = 0;
-    displayQuizQuestion();
+// ===== QUIZ FUNCTIONS =====
+function initQuiz() {
+    if (currentQuestionIndex === 0) {
+        currentQuestionIndex = 0;
+        quizScore = 0;
+        selectedAnswers = [];
+        loadQuestion();
+    }
 }
 
-function displayQuizQuestion() {
+function loadQuestion() {
     const quizContent = document.getElementById('quiz-content');
-    
-    if (currentQuizIndex >= quizQuestions.length) {
-        displayQuizResults();
+    const quizResult = document.getElementById('quiz-result');
+
+    if (currentQuestionIndex >= quizQuestions.length) {
+        quizContent.classList.add('hidden');
+        quizResult.classList.remove('hidden');
+        document.getElementById('final-score').textContent = quizScore;
         return;
     }
 
-    const question = quizQuestions[currentQuizIndex];
-    const progress = ((currentQuizIndex + 1) / quizQuestions.length) * 100;
+    const question = quizQuestions[currentQuestionIndex];
+    const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+
+    document.getElementById('quiz-progress').style.width = progress + '%';
+    document.getElementById('quiz-current').textContent = currentQuestionIndex + 1;
+    document.getElementById('quiz-total').textContent = quizQuestions.length;
 
     let html = `
-        <div class="quiz-progress">
-            <div>Pregunta ${currentQuizIndex + 1} de ${quizQuestions.length}</div>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: ${progress}%"></div>
-            </div>
-        </div>
-
-        <div class="question-card">
-            <div class="question-number">Pregunta ${currentQuizIndex + 1}</div>
-            <div class="question-text">${question.question}</div>
+        <div class="question-block">
+            <h3>${question.question}</h3>
             <div class="options">
     `;
 
     question.options.forEach((option, index) => {
         html += `
-            <button class="option" onclick="selectAnswer(${index})">${option}</button>
+            <button class="option" onclick="selectAnswer(${index}, '${question.correct}')">${option}</button>
         `;
     });
 
@@ -408,407 +478,259 @@ function displayQuizQuestion() {
     quizContent.innerHTML = html;
 }
 
-function selectAnswer(index) {
-    const question = quizQuestions[currentQuizIndex];
-    const quizContent = document.getElementById('quiz-content');
-    const options = quizContent.querySelectorAll('.option');
+function selectAnswer(index, correct) {
+    const options = document.querySelectorAll('.option');
+    const selectedOption = options[index];
+    const correctIndex = quizQuestions[currentQuestionIndex].options.indexOf(
+        quizQuestions[currentQuestionIndex].options[quizQuestions[currentQuestionIndex].options.findIndex(opt => opt === correct)]
+    );
 
-    // Desabilitar todos los botones
-    options.forEach(opt => opt.disabled = true);
-
-    if (index === question.correct) {
-        quizScore++;
-        options[index].classList.add('correct');
-        quizContent.innerHTML += `
-            <div class="feedback correct">
-                ✓ ¡Correcto! ${question.explanation}
-            </div>
-        `;
+    if (index === correctIndex) {
+        selectedOption.classList.add('correct');
+        quizScore += 1;
     } else {
-        options[index].classList.add('incorrect');
-        options[question.correct].classList.add('correct');
-        quizContent.innerHTML += `
-            <div class="feedback incorrect">
-                ✗ Incorrecto. La respuesta correcta es: ${question.options[question.correct]}<br><br>
-                ${question.explanation}
-            </div>
-        `;
+        selectedOption.classList.add('incorrect');
+        options[correctIndex].classList.add('correct');
     }
 
-    quizContent.innerHTML += `
-        <div class="quiz-controls">
-            <button class="btn btn-secondary" onclick="nextQuestion()">Siguiente Pregunta</button>
-        </div>
-    `;
+    options.forEach(opt => opt.disabled = true);
+
+    const explanation = document.createElement('div');
+    explanation.className = 'explanation';
+    explanation.innerHTML = `<strong>Explicación:</strong> ${quizQuestions[currentQuestionIndex].explanation}`;
+    document.querySelector('.question-block').appendChild(explanation);
+
+    setTimeout(() => {
+        currentQuestionIndex++;
+        loadQuestion();
+    }, 3000);
+
+    document.getElementById('quiz-score').textContent = quizScore;
 }
 
-function nextQuestion() {
-    currentQuizIndex++;
-    displayQuizQuestion();
+function restartQuiz() {
+    currentQuestionIndex = 0;
+    quizScore = 0;
+    selectedAnswers = [];
+    document.getElementById('quiz-content').classList.remove('hidden');
+    document.getElementById('quiz-result').classList.add('hidden');
+    loadQuestion();
 }
 
-function displayQuizResults() {
-    const quizContent = document.getElementById('quiz-content');
-    const percentage = (quizScore / quizQuestions.length) * 100;
-    const rating = percentage >= 80 ? "¡Excelente!" : percentage >= 60 ? "Bien" : "Necesitas estudiar más";
-
-    quizContent.innerHTML = `
-        <div style="text-align: center; padding: 40px;">
-            <h3 style="font-size: 2rem; margin-bottom: 20px;">Quiz Completado</h3>
-            <div style="font-size: 3rem; color: var(--secondary-color); margin-bottom: 20px; font-weight: bold;">
-                ${quizScore}/${quizQuestions.length}
-            </div>
-            <div style="font-size: 1.5rem; margin-bottom: 10px;">
-                ${percentage.toFixed(1)}%
-            </div>
-            <div style="font-size: 1.2rem; color: var(--primary-color); margin-bottom: 30px;">
-                ${rating}
-            </div>
-            <button class="btn btn-secondary" onclick="initializeQuiz()">Reintentar Quiz</button>
-        </div>
-    `;
-}
-
-// ============================================
-// FLASHCARDS FUNCTIONS
-// ============================================
-
-function initializeFlashcards() {
+// ===== FLASHCARDS FUNCTIONS =====
+function initFlashcards() {
     currentFlashcardIndex = 0;
-    flashcardFlipped = false;
     displayFlashcard();
+    setupFlashcardControls();
 }
 
 function displayFlashcard() {
-    const flashcardsContent = document.getElementById('flashcards-content');
-    
-    if (currentFlashcardIndex >= flashcardsData.length) {
-        flashcardsContent.innerHTML = `
-            <div style="text-align: center; padding: 40px;">
-                <h3>¡Completaste todas las flashcards!</h3>
-                <button class="btn btn-secondary" onclick="initializeFlashcards()">Comenzar de Nuevo</button>
-            </div>
-        `;
-        return;
-    }
-
-    const card = flashcardsData[currentFlashcardIndex];
-    const progress = ((currentFlashcardIndex + 1) / flashcardsData.length) * 100;
-
-    flashcardsContent.innerHTML = `
-        <div style="margin-bottom: 20px;">
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: ${progress}%"></div>
-            </div>
-            <div style="text-align: center; margin-top: 10px; color: var(--text-light);">
-                ${currentFlashcardIndex + 1} de ${flashcardsData.length}
-            </div>
-        </div>
-
-        <div class="flashcard ${flashcardFlipped ? 'flipped' : ''}" onclick="toggleFlashcard()">
-            <div class="flashcard-label">${flashcardFlipped ? 'Respuesta' : 'Pregunta'}</div>
-            <div class="flashcard-content">
-                ${flashcardFlipped ? card.back : card.front}
-            </div>
-        </div>
-
-        <div class="flashcards-controls">
-            <button class="btn btn-secondary btn-small" onclick="previousFlashcard()" ${currentFlashcardIndex === 0 ? 'disabled' : ''}>← Anterior</button>
-            <button class="btn btn-primary btn-small" onclick="nextFlashcard()">Siguiente →</button>
-        </div>
-    `;
+    const card = flashcards[currentFlashcardIndex];
+    document.getElementById('card-front').textContent = card.front;
+    document.getElementById('card-back').textContent = card.back;
+    document.getElementById('card-counter').textContent = `${currentFlashcardIndex + 1} / ${flashcards.length}`;
+    document.getElementById('flashcard').classList.remove('flipped');
 }
 
 function toggleFlashcard() {
-    flashcardFlipped = !flashcardFlipped;
-    displayFlashcard();
+    document.getElementById('flashcard').classList.toggle('flipped');
 }
 
-function previousFlashcard() {
-    if (currentFlashcardIndex > 0) {
-        currentFlashcardIndex--;
-        flashcardFlipped = false;
-        displayFlashcard();
-    }
+function setupFlashcardControls() {
+    document.getElementById('prev-card').onclick = () => {
+        if (currentFlashcardIndex > 0) {
+            currentFlashcardIndex--;
+            displayFlashcard();
+        }
+    };
+
+    document.getElementById('next-card').onclick = () => {
+        if (currentFlashcardIndex < flashcards.length - 1) {
+            currentFlashcardIndex++;
+            displayFlashcard();
+        }
+    };
 }
 
-function nextFlashcard() {
-    if (currentFlashcardIndex < flashcardsData.length - 1) {
-        currentFlashcardIndex++;
-        flashcardFlipped = false;
-        displayFlashcard();
-    }
-}
+// ===== CLASSIFIER FUNCTIONS =====
+function initClassifier() {
+    const pool = document.getElementById('materials-pool');
+    pool.innerHTML = '';
 
-// ============================================
-// CLASSIFIER FUNCTIONS
-// ============================================
+    materialsData.forEach((material, index) => {
+        const div = document.createElement('div');
+        div.className = 'material-item';
+        div.draggable = true;
+        div.textContent = material.name;
+        div.dataset.category = material.category;
+        div.dataset.index = index;
 
-function initializeClassifier() {
-    const classifierContent = document.getElementById('classifier-content');
-    
-    let html = `
-        <div style="margin-bottom: 20px;">
-            <p style="color: var(--text-light); margin-bottom: 15px;">Arrastra los materiales a su categoría correspondiente.</p>
-            <div class="materials-list" id="materials-list">
-    `;
+        div.addEventListener('dragstart', (e) => {
+            draggedElement = div;
+            div.classList.add('dragging');
+        });
 
-    classifierMaterials.forEach((material, index) => {
-        html += `
-            <div class="material-item" draggable="true" 
-                 ondragstart="dragStart(event, '${material.name}')"
-                 ondragend="dragEnd(event)">
-                ${material.name}
-            </div>
-        `;
+        div.addEventListener('dragend', () => {
+            div.classList.remove('dragging');
+        });
+
+        pool.appendChild(div);
     });
 
-    html += `
-            </div>
-        </div>
+    setupDropZones();
+}
 
-        <div class="categories">
-    `;
+function setupDropZones() {
+    document.querySelectorAll('.drop-zone').forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            zone.parentElement.classList.add('drag-over');
+        });
 
-    const categories = ["Metales", "Polímeros", "Cerámicos", "Compuestos"];
-    categories.forEach(category => {
-        html += `
-            <div class="category-drop" 
-                 ondragover="dragOver(event)" 
-                 ondrop="drop(event, '${category}')"
-                 ondragleave="dragLeave(event)"
-                 id="category-${category}">
-                <div class="category-title">${category}</div>
-                <div class="dropped-items" id="items-${category}"></div>
-            </div>
-        `;
+        zone.addEventListener('dragleave', () => {
+            zone.parentElement.classList.remove('drag-over');
+        });
+
+        zone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            zone.parentElement.classList.remove('drag-over');
+
+            if (draggedElement) {
+                const clone = draggedElement.cloneNode(true);
+                clone.className = 'material-in-zone';
+                clone.draggable = false;
+                zone.appendChild(clone);
+                draggedElement.remove();
+            }
+        });
     });
-
-    html += `
-        </div>
-
-        <div class="quiz-controls" style="margin-top: 30px;">
-            <button class="btn btn-secondary" onclick="checkClassifierAnswers()">Verificar Respuestas</button>
-            <button class="btn btn-primary" onclick="initializeClassifier()">Reiniciar</button>
-        </div>
-    `;
-
-    classifierContent.innerHTML = html;
 }
 
-let draggedMaterial = null;
-
-function dragStart(event, material) {
-    draggedMaterial = material;
-    event.dataTransfer.effectAllowed = "move";
-}
-
-function dragEnd(event) {
-    draggedMaterial = null;
-}
-
-function dragOver(event) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-    event.target.closest('.category-drop').classList.add('drag-over');
-}
-
-function dragLeave(event) {
-    event.target.closest('.category-drop').classList.remove('drag-over');
-}
-
-function drop(event, category) {
-    event.preventDefault();
-    event.target.closest('.category-drop').classList.remove('drag-over');
-    
-    if (draggedMaterial) {
-        const itemsContainer = document.getElementById(`items-${category}`);
-        const droppedItem = document.createElement('div');
-        droppedItem.className = 'dropped-item';
-        droppedItem.textContent = draggedMaterial;
-        itemsContainer.appendChild(droppedItem);
-    }
-}
-
-function checkClassifierAnswers() {
+function checkClassifier() {
+    const zones = document.querySelectorAll('.drop-zone');
     let correct = 0;
-    const categories = ["Metales", "Polímeros", "Cerámicos", "Compuestos"];
-    
-    categories.forEach(category => {
-        const itemsContainer = document.getElementById(`items-${category}`);
-        const items = itemsContainer.querySelectorAll('.dropped-item');
-        
+    let total = 0;
+
+    zones.forEach(zone => {
+        const items = zone.querySelectorAll('.material-in-zone');
+        const category = zone.id.replace('zone-', '');
+
         items.forEach(item => {
-            const material = classifierMaterials.find(m => m.name === item.textContent);
+            total++;
+            const material = materialsData.find(m => m.name === item.textContent);
             if (material && material.category === category) {
-                item.style.background = '#d4edda';
-                item.style.borderLeftColor = '#27AE60';
                 correct++;
-            } else {
-                item.style.background = '#f8d7da';
-                item.style.borderLeftColor = '#E74C3C';
             }
         });
     });
 
-    alert(`¡Correcto: ${correct}/${classifierMaterials.length}!`);
+    const result = document.getElementById('classifier-result');
+    if (correct === total && total > 0) {
+        result.textContent = `¡Excelente! ${correct}/${total} clasificaciones correctas.`;
+        result.classList.add('success');
+        result.classList.remove('error');
+    } else {
+        result.textContent = `${correct}/${total} clasificaciones correctas. Intenta de nuevo.`;
+        result.classList.add('error');
+        result.classList.remove('success');
+    }
 }
 
-// ============================================
-// COMPARATOR FUNCTIONS
-// ============================================
+function resetClassifier() {
+    initClassifier();
+    document.getElementById('classifier-result').textContent = '';
+}
 
-function initializeComparator() {
-    const comparatorContent = document.getElementById('comparator-content');
-    
-    let html = `
-        <p style="color: var(--text-light); margin-bottom: 20px;">Selecciona materiales para compararlos:</p>
-        <div class="material-selector">
-    `;
+// ===== COMPARATOR FUNCTIONS =====
+function initComparator() {
+    const select = document.getElementById('material-select');
+    select.innerHTML = '<option value="">Selecciona un material...</option>';
 
-    Object.keys(materialsComparison).forEach(material => {
-        html += `
-            <button class="material-option" onclick="toggleMaterial('${material}')" id="mat-${material}">
-                ${material}
-            </button>
-        `;
+    materialsComparator.forEach((material, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = material.name;
+        select.appendChild(option);
     });
 
-    html += `
-        </div>
-
-        <div id="comparison-table-container"></div>
-    `;
-
-    comparatorContent.innerHTML = html;
     selectedMaterials = [];
+    document.getElementById('comparison-table').innerHTML = '';
 }
 
-function toggleMaterial(material) {
-    const button = document.getElementById(`mat-${material}`);
-    
-    if (selectedMaterials.includes(material)) {
-        selectedMaterials = selectedMaterials.filter(m => m !== material);
-        button.classList.remove('selected');
-    } else {
-        selectedMaterials.push(material);
-        button.classList.add('selected');
-    }
+function addMaterialToComparison() {
+    const select = document.getElementById('material-select');
+    const index = select.value;
 
-    displayComparisonTable();
+    if (index === '' || selectedMaterials.includes(parseInt(index))) return;
+
+    selectedMaterials.push(parseInt(index));
+    updateComparisonTable();
 }
 
-function displayComparisonTable() {
-    const container = document.getElementById('comparison-table-container');
-    
+function updateComparisonTable() {
+    const table = document.getElementById('comparison-table');
+
     if (selectedMaterials.length === 0) {
-        container.innerHTML = '';
+        table.innerHTML = '<p>Selecciona materiales para comparar.</p>';
         return;
     }
 
-    const properties = Object.keys(materialsComparison[selectedMaterials[0]]);
-    
-    let html = `
-        <table class="comparison-table">
-            <thead>
-                <tr>
-                    <th>Propiedad</th>
-    `;
+    let html = '<table><tr><th>Propiedad</th>';
 
-    selectedMaterials.forEach(material => {
-        html += `<th>${material}</th>`;
+    selectedMaterials.forEach(index => {
+        html += `<th>${materialsComparator[index].name}</th>`;
     });
 
-    html += `
-                </tr>
-            </thead>
-            <tbody>
-    `;
+    html += '</tr>';
 
-    properties.forEach(property => {
-        html += `<tr><td><strong>${property}</strong></td>`;
-        selectedMaterials.forEach(material => {
-            html += `<td>${materialsComparison[material][property]}</td>`;
+    const properties = Object.keys(materialsComparator[selectedMaterials[0]].properties);
+
+    properties.forEach(prop => {
+        html += `<tr><td><strong>${prop}</strong></td>`;
+        selectedMaterials.forEach(index => {
+            const value = materialsComparator[index].properties[prop];
+            html += `<td>${typeof value === 'number' ? value.toFixed(2) : value}</td>`;
         });
-        html += `</tr>`;
+        html += '</tr>';
     });
 
-    html += `
-            </tbody>
-        </table>
-    `;
-
-    container.innerHTML = html;
+    html += '</table>';
+    table.innerHTML = html;
 }
 
-// ============================================
-// PSPD FUNCTIONS
-// ============================================
-
-function initializePSPD() {
-    const pspdContent = document.getElementById('pspd-content');
-    
-    pspdContent.innerHTML = `
-        <p style="color: var(--text-light); margin-bottom: 20px;">Explora la relación Proceso-Estructura-Propiedad-Desempeño:</p>
-        
-        <div class="pspd-flow">
-            <div class="pspd-box proceso">
-                <div class="pspd-title">PROCESO</div>
-                <div class="pspd-content">
-                    Tratamiento térmico, laminado, dopaje, moldeo
-                </div>
-            </div>
-
-            <div style="display: flex; align-items: center; justify-content: center;">→</div>
-
-            <div class="pspd-box estructura">
-                <div class="pspd-title">ESTRUCTURA</div>
-                <div class="pspd-content">
-                    Fases, tamaño de grano, cristalinidad, defectos
-                </div>
-            </div>
-
-            <div style="display: flex; align-items: center; justify-content: center;">→</div>
-
-            <div class="pspd-box propiedad">
-                <div class="pspd-title">PROPIEDAD</div>
-                <div class="pspd-content">
-                    Dureza, resistencia, ductilidad, conductividad
-                </div>
-            </div>
-
-            <div style="display: flex; align-items: center; justify-content: center;">→</div>
-
-            <div class="pspd-box desempeño">
-                <div class="pspd-title">DESEMPEÑO</div>
-                <div class="pspd-content">
-                    Aplicación final, vida útil, confiabilidad
-                </div>
-            </div>
-        </div>
-
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <h4 style="color: var(--primary-color); margin-bottom: 10px;">Ejemplo: Acero para herramientas</h4>
-            <p><strong>Proceso:</strong> Temple a alta temperatura + enfriamiento rápido</p>
-            <p><strong>Estructura:</strong> Martensita (fase dura) + carburos</p>
-            <p><strong>Propiedad:</strong> Dureza muy alta (60-65 HRC)</p>
-            <p><strong>Desempeño:</strong> Excelente para cortar otros materiales</p>
-        </div>
-
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px;">
-            <h4 style="color: var(--primary-color); margin-bottom: 10px;">Ejemplo: Polímero semicristalino</h4>
-            <p><strong>Proceso:</strong> Enfriamiento controlado después del moldeo</p>
-            <p><strong>Estructura:</strong> Zonas cristalinas + amorfas (cristalinidad ~60%)</p>
-            <p><strong>Propiedad:</strong> Rigidez moderada, buena ductilidad</p>
-            <p><strong>Desempeño:</strong> Ideal para envases que necesitan flexibilidad</p>
-        </div>
-    `;
+function clearComparison() {
+    selectedMaterials = [];
+    document.getElementById('comparison-table').innerHTML = '';
 }
 
-// ============================================
-// INICIALIZACIÓN AL CARGAR
-// ============================================
+// ===== PSPD SIMULATOR FUNCTIONS =====
+function initPSPD() {
+    const select = document.getElementById('pspd-example');
+    select.addEventListener('change', (e) => {
+        const index = e.target.value;
+        if (index !== '') {
+            displayPSPDExample(parseInt(index));
+        }
+    });
+}
 
-document.addEventListener('DOMContentLoaded', function() {
-    initializeQuiz();
+function displayPSPDExample(index) {
+    const example = pspdExamples[index];
+
+    document.getElementById('pspd-proceso').textContent = example.proceso;
+    document.getElementById('pspd-estructura').textContent = example.estructura;
+    document.getElementById('pspd-propiedad').textContent = example.propiedad;
+    document.getElementById('pspd-desempeño').textContent = example.desempeño;
+    document.getElementById('pspd-imagen-desc').textContent = `Ejemplo: ${example.name}`;
+}
+
+// ===== INICIALIZACIÓN AL CARGAR LA PÁGINA =====
+document.addEventListener('DOMContentLoaded', () => {
+    // Configurar botones de tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const tabName = e.target.dataset.tab;
+            switchTab(tabName);
+        });
+    });
 });
